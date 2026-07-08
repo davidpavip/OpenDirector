@@ -1,10 +1,14 @@
-# OpenDirector Day 1 — Event Core
+# OpenDirector Day 1 — Timestamp Core
 
-This package contains the first production-quality OpenDirector core primitive:
+Adds the `Timestamp` primitive.
 
-`DomainEvent`
+Canonical format:
 
-## Install
+```text
+HH:MM:SS,mmm
+```
+
+Run:
 
 ```bash
 python3 -m venv .venv
@@ -13,9 +17,3 @@ pip install -e .
 pip install pytest
 python -m pytest -q
 ```
-
-## Files
-
-- `opendirector/core/event.py`
-- `tests/test_event.py`
-- `docs/event.md`

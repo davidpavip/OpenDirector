@@ -11,7 +11,9 @@ opendirector/core/__init__.py
 opendirector/core/event.py
 opendirector/core/event_bus.py
 opendirector/core/timeline.py
+opendirector/core/timestamp.py
 opendirector/diary/__init__.py
 opendirector/diary/production_diary.py
 tests/test_event.py
 tests/test_production_diary.py
+tests/test_timestamp.py

@@ -1,5 +1,5 @@
 Metadata-Version: 2.4
 Name: opendirector
-Version: 0.1.0
-Summary: OpenDirector core event primitives
+Version: 0.2.0
+Summary: OpenDirector timestamp primitive
 Requires-Python: >=3.10

@@ -1,3 +1,3 @@
-from .event import DomainEvent, EventId
+from .timestamp import Timestamp
 
-__all__ = ['DomainEvent', 'EventId']
+__all__ = ['Timestamp']
