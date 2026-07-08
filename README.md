@@ -1,42 +1,21 @@
-# OpenDirector
+# OpenDirector Day 1 — Event Core
 
-> **AI agents replace jobs, not people.**  
-> **Everything is a Timeline Event.**
+This package contains the first production-quality OpenDirector core primitive:
 
-OpenDirector is an open-source operating system for filmmaking.
+`DomainEvent`
 
-## Core 0.4 — Production Diary
-
-This version adds the first module that *reacts* to the Event Bus:
-
-- `EventBus`
-- `Timeline`
-- `TimelineEvent`
-- `ProductionDiary`
-- `DiaryEntry`
-- CLI demo command
-
-The Production Diary listens to domain events and records the creative history of a movie project.
-
-## Try it
+## Install
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -e .
-opendirector diary demo projects/TheLostRobot
-cat projects/TheLostRobot/diary/production_diary.md
-python3 -m pytest -q
+pip install pytest
+python -m pytest -q
 ```
 
-## Architecture
+## Files
 
-```text
-Timeline.add(event)
-        ↓
-EventBus.publish("timeline.event_added")
-        ↓
-ProductionDiary records what happened
-```
-
-The diary is the first example of OpenDirector's reactive architecture.
+- `opendirector/core/event.py`
+- `tests/test_event.py`
+- `docs/event.md`

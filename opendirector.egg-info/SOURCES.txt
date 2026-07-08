@@ -4,14 +4,14 @@ opendirector/__init__.py
 opendirector.egg-info/PKG-INFO
 opendirector.egg-info/SOURCES.txt
 opendirector.egg-info/dependency_links.txt
-opendirector.egg-info/entry_points.txt
-opendirector.egg-info/requires.txt
 opendirector.egg-info/top_level.txt
 opendirector/cli/__init__.py
 opendirector/cli/main.py
 opendirector/core/__init__.py
+opendirector/core/event.py
 opendirector/core/event_bus.py
 opendirector/core/timeline.py
 opendirector/diary/__init__.py
 opendirector/diary/production_diary.py
+tests/test_event.py
 tests/test_production_diary.py
