@@ -1,1 +1,0 @@
-file '/Users/david/projects/opendirector/projects/TheLostRobot/assets/videos/shot_001.mp4'
