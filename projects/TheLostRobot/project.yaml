@@ -1,0 +1,11 @@
+id: the_lost_robot
+name: The Lost Robot
+version: 0.1
+author: Gilbert
+fps: 24
+aspect_ratio: 16:9
+default_duration: 4
+renderer:
+  backend: ltx_api
+  model: ltx-2-3-fast
+  resolution: 1920x1080

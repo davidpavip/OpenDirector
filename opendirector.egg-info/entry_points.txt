@@ -1,0 +1,2 @@
+[console_scripts]
+opendirector = opendirector.cli:main

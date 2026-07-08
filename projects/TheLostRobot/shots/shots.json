@@ -1,0 +1,14 @@
+[
+  {
+    "shot_id": "shot_001",
+    "scene": 1,
+    "scene_title": "Hilltop Decision",
+    "duration": 4,
+    "camera": "wide establishing shot",
+    "motion": "slow cinematic camera move",
+    "image_file": "assets/images/shot_001.png",
+    "video_file": "assets/videos/shot_001.mp4",
+    "image_prompt": "The boy sits under a huge tree at sunset, looking down at the glowing village in the valley. His small robot companion sits beside him. Cinematic 3D animated fantasy film, warm lighting.",
+    "video_prompt": "Slow cinematic camera move. The boy and robot move naturally. Grass and clothing move gently in the wind. Keep character identity consistent. No camera shake unless natural."
+  }
+]

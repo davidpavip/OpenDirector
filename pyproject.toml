@@ -1,0 +1,16 @@
+[project]
+name = "opendirector"
+version = "0.2.0"
+description = "An open AI filmmaking platform"
+requires-python = ">=3.11"
+dependencies = [
+    "pyyaml>=6.0",
+    "requests>=2.31.0"
+]
+
+[project.scripts]
+opendirector = "opendirector.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["opendirector*"]
