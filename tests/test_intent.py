@@ -57,3 +57,17 @@ def test_studio_creates_movie_with_intent():
     )
 
     assert movie.intent == intent
+
+
+def test_movie_to_dict_includes_intent():
+    intent = Intent(message="Never give up.")
+    studio = Studio("Gilbert Studio")
+
+    movie = studio.create_movie(
+        title="The Last Mountain",
+        intent=intent,
+    )
+
+    data = movie.to_dict()
+
+    assert data["intent"]["message"] == "Never give up."

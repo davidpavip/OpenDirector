@@ -67,5 +67,6 @@ class Movie:
                 for cs in self.candidate_sets
             ],
             "scenes": [scene.to_dict() for scene in self.scenes],
+            "intent": self.intent.to_dict() if self.intent else None,
             "metadata": self.metadata,
         }
