@@ -4,6 +4,7 @@ from opendirector.core.artifact import Artifact
 from opendirector.core.task import Task
 from opendirector.kernel.kernel import Kernel
 from opendirector.kernel.registry import Executor
+from opendirector.core.movie import Movie
 
 
 class Studio:
@@ -12,9 +13,10 @@ class Studio:
     def __init__(self, name: str):
         if not name.strip():
             raise ValueError("Studio name cannot be empty")
-
+        self.movies: list[Movie] = []
         self.name = name
         self.kernel = Kernel()
+        self.movies: list[Movie] = []
 
     @property
     def registry(self):
@@ -36,3 +38,8 @@ class Studio:
 
     def __repr__(self) -> str:
         return f"Studio(name={self.name!r})"
+
+    def create_movie(self, title: str, description: str = "") -> Movie:
+        movie = Movie(title=title, description=description)
+        self.movies.append(movie)
+        return movie

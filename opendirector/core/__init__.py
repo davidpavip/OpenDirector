@@ -6,8 +6,10 @@ from .candidate import Candidate, CandidateSet, CandidateStatus, ReviewerScore
 from .artifact import Artifact, ArtifactType
 from .task import Task, TaskStatus
 from .worker import Worker, WorkerCapability
+from .movie import Movie
 
 __all__ = [
+    "Movie",
     "DomainEvent",
     "EventId",
     "Timestamp",
