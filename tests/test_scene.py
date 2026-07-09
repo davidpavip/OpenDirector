@@ -45,4 +45,6 @@ def test_scene_can_hold_candidate_sets():
     scene.add_candidate_set(candidate_set)
 
     assert scene.candidate_sets[0] == candidate_set
-    assert scene.to_dict()["candidate_sets"][0]["purpose"] == "Choose opening shot style"
+    assert (
+        scene.to_dict()["candidate_sets"][0]["purpose"] == "Choose opening shot style"
+    )

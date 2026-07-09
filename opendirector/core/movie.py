@@ -7,6 +7,7 @@ from uuid import uuid4
 
 from opendirector.core.candidate import CandidateSet
 from opendirector.core.scene import Scene
+from opendirector.core.intent import Intent
 
 
 @dataclass
@@ -19,6 +20,7 @@ class Movie:
     created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
     candidate_sets: list[CandidateSet] = field(default_factory=list)
     scenes: list[Scene] = field(default_factory=list)
+    intent: Intent | None = None
     metadata: dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self) -> None:

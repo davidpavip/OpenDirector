@@ -1,4 +1,9 @@
-from opendirector.core.candidate import Candidate, CandidateSet, ReviewerScore, CandidateStatus
+from opendirector.core.candidate import (
+    Candidate,
+    CandidateSet,
+    ReviewerScore,
+    CandidateStatus,
+)
 
 
 def test_candidate_average_score():

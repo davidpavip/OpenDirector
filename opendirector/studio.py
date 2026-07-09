@@ -5,6 +5,7 @@ from opendirector.core.task import Task
 from opendirector.kernel.kernel import Kernel
 from opendirector.kernel.registry import Executor
 from opendirector.core.movie import Movie
+from opendirector.core.intent import Intent
 
 
 class Studio:
@@ -39,7 +40,12 @@ class Studio:
     def __repr__(self) -> str:
         return f"Studio(name={self.name!r})"
 
-    def create_movie(self, title: str, description: str = "") -> Movie:
-        movie = Movie(title=title, description=description)
+    def create_movie(
+        self,
+        title: str,
+        description: str = "",
+        intent: Intent | None = None,
+    ) -> Movie:
+        movie = Movie(title=title, description=description, intent=intent)
         self.movies.append(movie)
         return movie

@@ -8,9 +8,11 @@ from .task import Task, TaskStatus
 from .worker import Worker, WorkerCapability
 from .movie import Movie
 from .scene import Scene
+from .intent import Intent
 
 __all__ = [
     "Movie",
+    "Intent",
     "DomainEvent",
     "EventId",
     "Timestamp",
