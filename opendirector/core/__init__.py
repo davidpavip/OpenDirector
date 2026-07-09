@@ -7,6 +7,7 @@ from .artifact import Artifact, ArtifactType
 from .task import Task, TaskStatus
 from .worker import Worker, WorkerCapability
 from .movie import Movie
+from .scene import Scene
 
 __all__ = [
     "Movie",
@@ -19,4 +20,5 @@ __all__ = [
     "CandidateSet",
     "CandidateStatus",
     "ReviewerScore",
+    "Scene",
 ]

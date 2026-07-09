@@ -53,11 +53,13 @@ class ProductionDiary:
     def on_any_event(self, event: DomainEvent) -> None:
         if event.name == "timeline.event_added":
             return
-        self.entries.append(DiaryEntry(
-            event.occurred_at,
-            f"Domain event: {event.name}",
-            f"Payload: `{event.payload}`",
-        ))
+        self.entries.append(
+            DiaryEntry(
+                event.occurred_at,
+                f"Domain event: {event.name}",
+                f"Payload: `{event.payload}`",
+            )
+        )
 
     def write(self) -> Path:
         output = self.diary_dir / "production_diary.md"

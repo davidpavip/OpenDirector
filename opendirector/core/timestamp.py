@@ -18,7 +18,6 @@ from dataclasses import dataclass
 import re
 from typing import Union
 
-
 TimestampInput = Union["Timestamp", str, int, float]
 
 
@@ -77,10 +76,7 @@ class Timestamp:
             milliseconds = int(ms_text)
 
             total = (
-                hours * 3_600_000
-                + minutes * 60_000
-                + seconds * 1_000
-                + milliseconds
+                hours * 3_600_000 + minutes * 60_000 + seconds * 1_000 + milliseconds
             )
             return cls(total)
 

@@ -16,11 +16,9 @@ class Executor(Protocol):
     name: str
     capabilities: list[Capability]
 
-    def can_execute(self, task: Task) -> bool:
-        ...
+    def can_execute(self, task: Task) -> bool: ...
 
-    def execute(self, task: Task):
-        ...
+    def execute(self, task: Task): ...
 
 
 class Registry:
@@ -31,11 +29,7 @@ class Registry:
         self._executors.append(executor)
 
     def find(self, task: Task) -> list[Executor]:
-        return [
-            executor
-            for executor in self._executors
-            if executor.can_execute(task)
-        ]
+        return [executor for executor in self._executors if executor.can_execute(task)]
 
     def all(self) -> list[Executor]:
         return list(self._executors)

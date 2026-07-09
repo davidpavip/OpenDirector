@@ -27,7 +27,14 @@ class TimelineEvent:
 class StoryBeatEvent(TimelineEvent):
     """A story-intent event used to guide other agents."""
 
-    def __init__(self, start: float, duration: float, goal: str, emotion: str = "", importance: str = "normal"):
+    def __init__(
+        self,
+        start: float,
+        duration: float,
+        goal: str,
+        emotion: str = "",
+        importance: str = "normal",
+    ):
         super().__init__(
             start=start,
             duration=duration,
@@ -41,13 +48,24 @@ class StoryBeatEvent(TimelineEvent):
 class VideoClipEvent(TimelineEvent):
     """A rendered or imported video clip placed on the timeline."""
 
-    def __init__(self, start: float, duration: float, clip_path: str, shot_id: str = "", trim_start: float = 0.0):
+    def __init__(
+        self,
+        start: float,
+        duration: float,
+        clip_path: str,
+        shot_id: str = "",
+        trim_start: float = 0.0,
+    ):
         super().__init__(
             start=start,
             duration=duration,
             track="video",
             event_type="video_clip",
-            metadata={"clip_path": clip_path, "shot_id": shot_id, "trim_start": trim_start},
+            metadata={
+                "clip_path": clip_path,
+                "shot_id": shot_id,
+                "trim_start": trim_start,
+            },
         )
 
 
@@ -55,13 +73,24 @@ class VideoClipEvent(TimelineEvent):
 class ReviewEvent(TimelineEvent):
     """A review comment or score attached to a time range."""
 
-    def __init__(self, start: float, duration: float, score: int, comment: str, target_event_id: str = ""):
+    def __init__(
+        self,
+        start: float,
+        duration: float,
+        score: int,
+        comment: str,
+        target_event_id: str = "",
+    ):
         super().__init__(
             start=start,
             duration=duration,
             track="review",
             event_type="review",
-            metadata={"score": score, "comment": comment, "target_event_id": target_event_id},
+            metadata={
+                "score": score,
+                "comment": comment,
+                "target_event_id": target_event_id,
+            },
         )
 
 
@@ -75,17 +104,19 @@ class Timeline:
     def add(self, event: TimelineEvent) -> TimelineEvent:
         self._events.append(event)
         self._events.sort(key=lambda e: (e.start, e.track, e.event_type))
-        self.event_bus.publish(DomainEvent(
-            name="timeline.event_added",
-            payload={
-                "event_id": event.id,
-                "event_type": event.event_type,
-                "track": event.track,
-                "start": event.start,
-                "duration": event.duration,
-                "metadata": event.metadata,
-            },
-        ))
+        self.event_bus.publish(
+            DomainEvent(
+                name="timeline.event_added",
+                payload={
+                    "event_id": event.id,
+                    "event_type": event.event_type,
+                    "track": event.track,
+                    "start": event.start,
+                    "duration": event.duration,
+                    "metadata": event.metadata,
+                },
+            )
+        )
         return event
 
     def events(self) -> list[TimelineEvent]:
