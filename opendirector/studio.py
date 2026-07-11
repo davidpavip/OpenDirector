@@ -6,6 +6,8 @@ from opendirector.kernel.kernel import Kernel
 from opendirector.kernel.registry import Executor
 from opendirector.core.movie import Movie
 from opendirector.core.intent import Intent
+from opendirector.creative import CreativeContext, CreativeEngine, CreativeProgram
+from opendirector.crew import Crew
 
 
 class Studio:
@@ -18,6 +20,19 @@ class Studio:
         self.name = name
         self.kernel = Kernel()
         self.movies: list[Movie] = []
+        self.creative_engine = CreativeEngine()
+        self.crew = Crew()
+
+    async def run(
+        self,
+        program: CreativeProgram,
+        context: CreativeContext,
+    ) -> CreativeContext:
+
+        return await self.creative_engine.run(
+            program,
+            context,
+        )
 
     @property
     def registry(self):
