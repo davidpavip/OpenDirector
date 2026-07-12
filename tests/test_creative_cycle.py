@@ -12,6 +12,7 @@ from opendirector.creative.operators import (
 )
 from opendirector.crew import Editor
 from opendirector.providers import MockLanguageProvider
+from opendirector.creative import CreativeContext, CreativeCycle, CreativeProgram
 
 
 def build_studio() -> Studio:
@@ -24,19 +25,40 @@ def build_studio() -> Studio:
 def test_create_review_select_cycle():
     studio = build_studio()
 
+    ##    program = CreativeProgram(
+    ##        name="Opening Shot Cycle",
+    ##        operators=[
+    ##            CreateCandidatesOperator(
+    ##                purpose="Choose the opening shot",
+    ##                blueprints=[
+    ##                    CandidateBlueprint("Wide sunrise"),
+    ##                    CandidateBlueprint("Emotional close-up"),
+    ##                    CandidateBlueprint("Tracking reveal"),
+    ##                ],
+    ##            ),
+    ##            ReviewCandidatesOperator(studio.crew),
+    ##            SelectCandidateOperator(),
+    ##        ],
+    ##    )
+
     program = CreativeProgram(
-        name="Opening Shot Cycle",
-        operators=[
-            CreateCandidatesOperator(
-                purpose="Choose the opening shot",
-                blueprints=[
-                    CandidateBlueprint("Wide sunrise"),
-                    CandidateBlueprint("Emotional close-up"),
-                    CandidateBlueprint("Tracking reveal"),
+        name="Opening Shot Program",
+        cycles=[
+            CreativeCycle(
+                name="Opening Shot Cycle",
+                operators=[
+                    CreateCandidatesOperator(
+                        purpose="Choose the opening shot",
+                        blueprints=[
+                            CandidateBlueprint("Wide sunrise"),
+                            CandidateBlueprint("Emotional close-up"),
+                            CandidateBlueprint("Tracking reveal"),
+                        ],
+                    ),
+                    ReviewCandidatesOperator(studio.crew),
+                    SelectCandidateOperator(),
                 ],
-            ),
-            ReviewCandidatesOperator(studio.crew),
-            SelectCandidateOperator(),
+            )
         ],
     )
 
@@ -57,6 +79,7 @@ def test_create_review_select_cycle():
     assert result.metadata["reviewed_candidate_count"] == 3
     assert result.metadata["selected_candidate_title"] == "Emotional close-up"
     assert result.metadata["selected_candidate_score"] == 91
+    assert result.metadata["completed_cycles"] == ["Opening Shot Cycle"]
 
     winner = candidate_set.winner()
     assert winner is not None
