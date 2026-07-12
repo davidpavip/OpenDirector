@@ -1,5 +1,6 @@
 # OpenDirector Day 1 — Timestamp Core
 
+
 Adds the `Timestamp` primitive.
 
 Canonical format:

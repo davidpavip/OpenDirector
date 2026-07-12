@@ -7,6 +7,7 @@ from opendirector.core.candidate import Candidate, CandidateSet
 from opendirector.creative import CreativeContext, CreativeProgram
 from opendirector.creative.operators import ReviewCandidatesOperator
 from opendirector.crew import Editor
+from opendirector.providers import MockLanguageProvider
 
 
 def test_studio_owns_a_crew():
@@ -17,7 +18,7 @@ def test_studio_owns_a_crew():
 
 def test_crew_adds_and_finds_editor():
     studio = Studio("Gilbert Studio")
-    editor = studio.crew.add(Editor())
+    editor = studio.crew.add(Editor(MockLanguageProvider()))
 
     assert studio.crew.has("editor")
     assert studio.crew["editor"] is editor
@@ -25,15 +26,15 @@ def test_crew_adds_and_finds_editor():
 
 def test_crew_rejects_duplicate_role():
     studio = Studio("Gilbert Studio")
-    studio.crew.add(Editor())
+    studio.crew.add(Editor(MockLanguageProvider()))
 
     with pytest.raises(ValueError, match="role already filled"):
-        studio.crew.add(Editor())
+        studio.crew.add(Editor(MockLanguageProvider()))
 
 
 def test_editor_reviews_candidate_set():
     studio = Studio("Gilbert Studio")
-    studio.crew.add(Editor())
+    studio.crew.add(Editor(MockLanguageProvider()))
 
     candidates = CandidateSet(purpose="Choose the opening shot")
     candidates.add(Candidate(candidate_type="shot", title="Wide sunrise"))
@@ -60,7 +61,7 @@ def test_editor_reviews_candidate_set():
 
 def test_editor_requires_candidates():
     studio = Studio("Gilbert Studio")
-    studio.crew.add(Editor())
+    studio.crew.add(Editor(MockLanguageProvider()))
 
     program = CreativeProgram(
         name="Invalid Review",

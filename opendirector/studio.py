@@ -8,6 +8,7 @@ from opendirector.core.movie import Movie
 from opendirector.core.intent import Intent
 from opendirector.creative import CreativeContext, CreativeEngine, CreativeProgram
 from opendirector.crew import Crew
+from opendirector.providers import ProviderRegistry
 
 
 class Studio:
@@ -22,6 +23,7 @@ class Studio:
         self.movies: list[Movie] = []
         self.creative_engine = CreativeEngine()
         self.crew = Crew()
+        self.providers = ProviderRegistry()
 
     async def run(
         self,
