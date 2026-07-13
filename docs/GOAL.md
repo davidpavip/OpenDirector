@@ -1,49 +1,31 @@
-# OpenDirector Goal
+# OpenDirector
 
-OpenDirector exists to build the world's best AI-native Studio for
-cinematic storytelling, where humans and intelligent creative crew members
-collaborate through natural conversation to evolve great stories.
+## Mission
 
-## What We Believe
+**Expand the boundary of human imagination.**
 
-- Creativity is not generation. Creativity is evolution.
-- Humans own creative intent.
-- AI explores possibilities.
-- The Studio presents creative roles, not model names.
-- Conversation is the primary interface for filmmakers.
-- Movies, animation, and music videos are the first domain.
-- Excellence in cinematic creation comes before broader generalization.
+## Vision
 
-## Engineering Principles
+Build a Creative Studio that becomes wiser with every production.
 
-- Keep the architecture simple and explainable.
-- Separate crew roles from technology providers.
-- Keep AI models and renderers replaceable.
-- Prefer small, independently testable components.
-- Preserve rejected candidates, reviews, and lineage.
-- Do not expose implementation vocabulary to filmmakers.
-- Do not add features merely because they are fashionable.
+The Studio collaborates with humans to plan, produce, and learn from creative work.
 
-## The Test
+Movies are only the first application.
+The ultimate goal is to build a creative platform capable of helping humans imagine ideas beyond what either humans or AI could discover alone.
 
-Before adding code, ask:
+## Core Principles
 
-> Does this help filmmakers create better cinematic stories?
+Human imagination defines the destination.
 
-If the answer is no, do not build it yet.
+AI expands the search space.
 
-## AI Contributors
+Evolution discovers better ideas.
 
-Read this document before proposing or modifying code.
+Knowledge preserves every lesson.
 
-When several implementations are possible, choose the one that best:
+Every production leaves the Studio wiser.
 
-- preserves architectural clarity;
-- supports natural creative collaboration;
-- hides model-specific details;
-- remains useful when current AI models are replaced;
-- moves OpenDirector closer to becoming a genuine Studio.
+The filmmaker always owns the creative vision.
 
-## Promise
-
-Leave the Studio better than you found it.
+Technology changes.
+Knowledge endures.

@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from opendirector.core.candidate import Candidate, CandidateSet
 from opendirector.creative.context import CreativeContext
 from opendirector.creative.operator import CreativeOperator
+from opendirector.core.creative_traits import CreativeTraits
 
 
 @dataclass(frozen=True)
@@ -47,8 +48,18 @@ class CreateCandidatesOperator(CreativeOperator):
                     candidate_type=blueprint.candidate_type,
                     title=blueprint.title,
                     created_by=self.created_by,
+                    #                    payload={
+                    #                        "source_operator": self.name,
+                    #                   },
                     payload={
                         "source_operator": self.name,
+                        "generation": 1,
+                        "creative_traits": dict(
+                            context.metadata.get(
+                                "seed_creative_traits",
+                                CreativeTraits().to_dict(),
+                            )
+                        ),
                     },
                 )
             )

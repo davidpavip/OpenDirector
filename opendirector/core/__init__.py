@@ -9,6 +9,7 @@ from .worker import Worker, WorkerCapability
 from .movie import Movie
 from .scene import Scene
 from .intent import Intent
+from .creative_traits import CreativeTraits
 
 __all__ = [
     "Movie",

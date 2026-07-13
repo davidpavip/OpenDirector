@@ -1,8 +1,10 @@
 from .engine import EvolutionEngine
-from .strategy import EvolutionStrategy, KeepBestStrategy
+from .generation import GenerationResult
+from .strategy import EvolutionStrategy, SeedThenEvolveStrategy
 
 __all__ = [
     "EvolutionEngine",
     "EvolutionStrategy",
-    "KeepBestStrategy",
+    "GenerationResult",
+    "SeedThenEvolveStrategy",
 ]

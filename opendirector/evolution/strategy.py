@@ -2,42 +2,52 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 
-from opendirector.core.candidate import Candidate, CandidateSet
+from opendirector.creative.context import CreativeContext
+from opendirector.creative.operator import CreativeOperator
 
 
 class EvolutionStrategy(ABC):
-    """Strategy for turning one generation of candidates into the next."""
+    """Choose the operators used for one evolutionary generation."""
 
     name: str = "base"
 
     @abstractmethod
-    def evolve(self, candidate_set: CandidateSet) -> CandidateSet:
+    def operators_for_generation(
+        self,
+        context: CreativeContext,
+        generation: int,
+    ) -> tuple[CreativeOperator, ...]:
         raise NotImplementedError
 
 
-class KeepBestStrategy(EvolutionStrategy):
-    """Minimal first strategy: preserve the best candidate as the winner."""
+class SeedThenEvolveStrategy(EvolutionStrategy):
+    """Seed generation one, then evolve all later generations."""
 
-    name = "keep_best"
+    name = "seed_then_evolve"
 
-    def evolve(self, candidate_set: CandidateSet) -> CandidateSet:
-        winner = candidate_set.winner()
-        evolved = CandidateSet(purpose=f"Evolved from: {candidate_set.purpose}")
+    def __init__(
+        self,
+        seed_operator: CreativeOperator,
+        evolve_operator: CreativeOperator,
+        review_operator: CreativeOperator,
+        select_operator: CreativeOperator,
+    ) -> None:
+        self.seed_operator = seed_operator
+        self.evolve_operator = evolve_operator
+        self.review_operator = review_operator
+        self.select_operator = select_operator
 
-        if winner is None:
-            return evolved
+    def operators_for_generation(
+        self,
+        context: CreativeContext,
+        generation: int,
+    ) -> tuple[CreativeOperator, ...]:
+        del context
 
-        child = Candidate(
-            candidate_type=winner.candidate_type,
-            title=f"{winner.title} - evolved",
-            payload={
-                **winner.payload,
-                "parent_candidate_id": winner.id,
-                "evolution_strategy": self.name,
-            },
-            created_by=f"evolution:{self.name}",
+        first_operator = self.seed_operator if generation == 1 else self.evolve_operator
+
+        return (
+            first_operator,
+            self.review_operator,
+            self.select_operator,
         )
-
-        evolved.add(child)
-        evolved.select(child.id)
-        return evolved
