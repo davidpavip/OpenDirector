@@ -11,6 +11,7 @@ from .models import (
 )
 from .operator import PlanningOperator
 from .program import PlanningProgram
+from .evolution import BlueprintMutation, BlueprintSeed
 
 __all__ = [
     "AssignmentMode",
@@ -24,4 +25,6 @@ __all__ = [
     "RoleAssignment",
     "SourceDocument",
     "StoryRole",
+    "BlueprintMutation",
+    "BlueprintSeed",
 ]
