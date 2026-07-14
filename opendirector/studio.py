@@ -10,6 +10,11 @@ from opendirector.creative import CreativeContext, CreativeEngine, CreativeProgr
 from opendirector.crew import Crew
 from opendirector.providers import ProviderRegistry
 from opendirector.knowledge import KnowledgeBase
+from opendirector.planning import (
+    PlanningContext,
+    PlanningEngine,
+    PlanningProgram,
+)
 
 
 class Studio:
@@ -26,6 +31,7 @@ class Studio:
         self.crew = Crew()
         self.providers = ProviderRegistry()
         self.knowledge = KnowledgeBase()
+        self.planning_engine = PlanningEngine()
 
     async def run(
         self,
@@ -68,3 +74,10 @@ class Studio:
         movie = Movie(title=title, description=description, intent=intent)
         self.movies.append(movie)
         return movie
+
+    async def plan(
+        self,
+        program: PlanningProgram,
+        context: PlanningContext,
+    ) -> PlanningContext:
+        return await self.planning_engine.run(program, context)
