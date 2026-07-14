@@ -9,6 +9,7 @@ from opendirector.core.intent import Intent
 from opendirector.creative import CreativeContext, CreativeEngine, CreativeProgram
 from opendirector.crew import Crew
 from opendirector.providers import ProviderRegistry
+from opendirector.knowledge import KnowledgeBase
 
 
 class Studio:
@@ -24,6 +25,7 @@ class Studio:
         self.creative_engine = CreativeEngine()
         self.crew = Crew()
         self.providers = ProviderRegistry()
+        self.knowledge = KnowledgeBase()
 
     async def run(
         self,
