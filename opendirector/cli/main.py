@@ -1,66 +1,100 @@
 from __future__ import annotations
 
+import asyncio
+from importlib.metadata import PackageNotFoundError
+from importlib.metadata import version as package_version
 from pathlib import Path
+
 import typer
-from rich import print
 
-from opendirector.core.event_bus import EventBus
-from opendirector.core.timeline import (
-    Timeline,
-    StoryBeatEvent,
-    VideoClipEvent,
-    ReviewEvent,
+from opendirector.applications import PlanningApplication
+
+app = typer.Typer(
+    name="opendirector",
+    help="OpenDirector Creative Studio command-line interface.",
+    no_args_is_help=True,
 )
-from opendirector.diary.production_diary import ProductionDiary
-
-app = typer.Typer()
-diary_app = typer.Typer()
-app.add_typer(diary_app, name="diary")
 
 
-@diary_app.command("demo")
-def diary_demo(project_path: Path):
-    """Create a demo timeline and write a production diary."""
-    project_path.mkdir(parents=True, exist_ok=True)
+@app.command()
+def plan(
+    production: Path = typer.Argument(
+        ...,
+        help="Production directory containing source.md.",
+        exists=True,
+        file_okay=False,
+        dir_okay=True,
+        readable=True,
+        resolve_path=True,
+    ),
+    approved_by: str = typer.Option(
+        "Gilbert",
+        "--approved-by",
+        help="Name of the filmmaker approving the blueprint.",
+    ),
+) -> None:
+    """Plan a production and create its blueprint."""
 
-    bus = EventBus()
-    diary = ProductionDiary(project_path)
-    diary.connect(bus)
+    source_path = production / "source.md"
 
-    timeline = Timeline(event_bus=bus)
-
-    beat = timeline.add(
-        StoryBeatEvent(
-            start=0.0,
-            duration=4.0,
-            goal="The boy looks toward the glowing village and considers leaving home.",
-            emotion="hope",
-            importance="high",
+    if not source_path.is_file():
+        typer.secho(
+            f"Source document not found: {source_path}",
+            fg=typer.colors.RED,
+            err=True,
         )
-    )
+        raise typer.Exit(code=1)
 
-    clip = timeline.add(
-        VideoClipEvent(
-            start=0.0,
-            duration=4.0,
-            clip_path="assets/videos/shot_001.mp4",
-            shot_id="shot_001",
+    typer.echo()
+    typer.secho(
+        "OpenDirector Studio",
+        fg=typer.colors.CYAN,
+        bold=True,
+    )
+    typer.echo(f"Production: {production.name}")
+    typer.echo(f"Source:     {source_path}")
+    typer.echo()
+
+    application = PlanningApplication()
+
+    try:
+        blueprint_path = asyncio.run(
+            application.run(
+                production_dir=production,
+                approved_by=approved_by,
+            )
         )
-    )
-
-    timeline.add(
-        ReviewEvent(
-            start=0.0,
-            duration=4.0,
-            score=92,
-            comment="Strong establishing shot. Keep for director's cut.",
-            target_event_id=clip.id,
+    except Exception as exc:
+        typer.secho(
+            f"Planning failed: {exc}",
+            fg=typer.colors.RED,
+            err=True,
         )
-    )
+        raise typer.Exit(code=1) from exc
 
-    output = diary.write()
-    print(f"[green]Production diary written:[/green] {output}")
+    typer.secho(
+        "Production planning completed.",
+        fg=typer.colors.GREEN,
+        bold=True,
+    )
+    typer.echo(f"Blueprint: {blueprint_path}")
+
+
+@app.command()
+def version() -> None:
+    """Display the installed OpenDirector version."""
+
+    try:
+        value = package_version("opendirector")
+    except PackageNotFoundError:
+        value = "development"
+
+    typer.echo(f"OpenDirector {value}")
+
+
+def main() -> None:
+    app()
 
 
 if __name__ == "__main__":
-    app()
+    main()

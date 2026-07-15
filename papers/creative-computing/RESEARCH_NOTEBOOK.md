@@ -1269,3 +1269,30 @@ Major discoveries
 • Mission refined to:
 
 Expand the boundary of human imagination.
+
+
+
+2026-07-15
+Major Discovery
+
+Planning is not a runtime.
+
+Planning is a CreativeProgram executed by the universal Creative Engine.
+
+This establishes the central execution model of OpenDirector:
+
+Creative Engine
+
+↓
+
+Creative Program
+
+↓
+
+Creative Cycle
+
+↓
+
+Creative Operator
+
+Every future capability—including planning, rendering, editing, reviewing, learning, and publishing—will be implemented as Creative Programs rather than specialized runtimes.

@@ -12,6 +12,7 @@ from .models import (
 from .operator import PlanningOperator
 from .program import PlanningProgram
 from .evolution import BlueprintMutation, BlueprintSeed
+from .creative_operator import PlanningCreativeOperator
 
 __all__ = [
     "AssignmentMode",
@@ -27,4 +28,5 @@ __all__ = [
     "StoryRole",
     "BlueprintMutation",
     "BlueprintSeed",
+    "PlanningCreativeOperator",
 ]

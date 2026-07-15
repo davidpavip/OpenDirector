@@ -3,3 +3,4 @@ Name: opendirector
 Version: 0.2.0
 Summary: OpenDirector timestamp primitive
 Requires-Python: >=3.10
+Requires-Dist: typer>=0.12

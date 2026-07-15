@@ -3,7 +3,9 @@ name = "opendirector"
 version = "0.2.0"
 description = "OpenDirector timestamp primitive"
 requires-python = ">=3.10"
-dependencies = []
+dependencies = [
+    "typer>=0.12",
+]
 
 [build-system]
 requires = ["setuptools>=68"]
@@ -11,3 +13,8 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 include = ["opendirector*"]
+
+[project.scripts]
+opendirector = "opendirector.cli.main:main"
+
+

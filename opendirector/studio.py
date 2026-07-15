@@ -10,9 +10,13 @@ from opendirector.creative import CreativeContext, CreativeEngine, CreativeProgr
 from opendirector.crew import Crew
 from opendirector.providers import ProviderRegistry
 from opendirector.knowledge import KnowledgeBase
+from opendirector.creative import (
+    CreativeContext,
+    CreativeEngine,
+    CreativeProgram,
+)
 from opendirector.planning import (
     PlanningContext,
-    PlanningEngine,
     PlanningProgram,
 )
 
@@ -31,7 +35,6 @@ class Studio:
         self.crew = Crew()
         self.providers = ProviderRegistry()
         self.knowledge = KnowledgeBase()
-        self.planning_engine = PlanningEngine()
 
     async def run(
         self,
@@ -75,9 +78,37 @@ class Studio:
         self.movies.append(movie)
         return movie
 
+    ##    async def plan(
+    ##        self,
+    ##        program: PlanningProgram,
+    ##        context: PlanningContext,
+    ##    ) -> PlanningContext:
+    ##        return await self.planning_engine.run(program, context)
+
     async def plan(
         self,
         program: PlanningProgram,
         context: PlanningContext,
     ) -> PlanningContext:
-        return await self.planning_engine.run(program, context)
+        creative_context = CreativeContext(
+            planning=context,
+        )
+
+        result = await self.run(
+            program,
+            creative_context,
+        )
+
+        if result.planning is None:
+            raise RuntimeError("Planning program completed without PlanningContext")
+
+        result.planning.metadata["planning_program"] = program.name
+
+        result.planning.metadata["completed_planning_operators"] = list(
+            result.metadata.get(
+                "completed_operators",
+                [],
+            )
+        )
+
+        return result.planning

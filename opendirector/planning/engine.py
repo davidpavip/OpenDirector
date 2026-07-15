@@ -1,22 +1,47 @@
 from __future__ import annotations
 
+from opendirector.creative import (
+    CreativeContext,
+    CreativeEngine,
+)
 from opendirector.planning.context import PlanningContext
 from opendirector.planning.program import PlanningProgram
 
 
 class PlanningEngine:
-    """Execute planning programs over a shared PlanningContext."""
+    """Compatibility wrapper around the central CreativeEngine.
+
+    Deprecated: use Studio.run() with CreativeContext(planning=...).
+    """
+
+    def __init__(self) -> None:
+        self._creative_engine = CreativeEngine()
 
     async def run(
         self,
         program: PlanningProgram,
         context: PlanningContext,
     ) -> PlanningContext:
-        context.record("planning_program", program.name)
-        context.record("completed_planning_operators", [])
+        creative_context = CreativeContext(
+            planning=context,
+        )
 
-        for operator in program.operators:
-            context = await operator.execute(context)
-            context.metadata["completed_planning_operators"].append(operator.name)
+        result = await self._creative_engine.run(
+            program,
+            creative_context,
+        )
 
-        return context
+        if result.planning is None:
+            raise RuntimeError("Planning program completed without PlanningContext")
+
+        # Preserve the old planning metadata contract temporarily.
+        result.planning.metadata["planning_program"] = program.name
+
+        result.planning.metadata["completed_planning_operators"] = list(
+            result.metadata.get(
+                "completed_operators",
+                [],
+            )
+        )
+
+        return result.planning

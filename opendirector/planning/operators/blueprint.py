@@ -8,10 +8,14 @@ from opendirector.planning.models import (
     RoleAssignment,
     StoryRole,
 )
-from opendirector.planning.operator import PlanningOperator
+
+# from opendirector.planning.operator import PlanningOperator
+from opendirector.planning.creative_operator import (
+    PlanningCreativeOperator,
+)
 
 
-class DefineIntentOperator(PlanningOperator):
+class DefineIntentOperator(PlanningCreativeOperator):
     name = "define_intent"
 
     def __init__(self, intent_summary: str) -> None:
@@ -19,7 +23,7 @@ class DefineIntentOperator(PlanningOperator):
             raise ValueError("Intent summary cannot be empty")
         self.intent_summary = intent_summary
 
-    async def execute(
+    async def execute_planning(
         self,
         context: PlanningContext,
     ) -> PlanningContext:
@@ -32,7 +36,7 @@ class DefineIntentOperator(PlanningOperator):
         return context
 
 
-class DesignStoryOperator(PlanningOperator):
+class DesignStoryOperator(PlanningCreativeOperator):
     name = "design_story"
 
     def __init__(self, story_summary: str) -> None:
@@ -40,7 +44,7 @@ class DesignStoryOperator(PlanningOperator):
             raise ValueError("Story summary cannot be empty")
         self.story_summary = story_summary
 
-    async def execute(
+    async def execute_planning(
         self,
         context: PlanningContext,
     ) -> PlanningContext:
@@ -53,13 +57,13 @@ class DesignStoryOperator(PlanningOperator):
         return context
 
 
-class DefineStoryRolesOperator(PlanningOperator):
+class DefineStoryRolesOperator(PlanningCreativeOperator):
     name = "define_story_roles"
 
     def __init__(self, roles: list[StoryRole]) -> None:
         self.roles = tuple(roles)
 
-    async def execute(
+    async def execute_planning(
         self,
         context: PlanningContext,
     ) -> PlanningContext:
@@ -72,13 +76,13 @@ class DefineStoryRolesOperator(PlanningOperator):
         return context
 
 
-class DefineProfessionsOperator(PlanningOperator):
+class DefineProfessionsOperator(PlanningCreativeOperator):
     name = "define_professions"
 
     def __init__(self, professions: list[Profession]) -> None:
         self.professions = tuple(professions)
 
-    async def execute(
+    async def execute_planning(
         self,
         context: PlanningContext,
     ) -> PlanningContext:
@@ -91,13 +95,13 @@ class DefineProfessionsOperator(PlanningOperator):
         return context
 
 
-class AssignProfessionsOperator(PlanningOperator):
+class AssignProfessionsOperator(PlanningCreativeOperator):
     name = "assign_professions"
 
     def __init__(self, assignments: list[RoleAssignment]) -> None:
         self.assignments = tuple(assignments)
 
-    async def execute(
+    async def execute_planning(
         self,
         context: PlanningContext,
     ) -> PlanningContext:
@@ -125,13 +129,13 @@ class AssignProfessionsOperator(PlanningOperator):
         return context
 
 
-class ApproveBlueprintOperator(PlanningOperator):
+class ApproveBlueprintOperator(PlanningCreativeOperator):
     name = "approve_blueprint"
 
     def __init__(self, approved_by: str) -> None:
         self.approved_by = approved_by
 
-    async def execute(
+    async def execute_planning(
         self,
         context: PlanningContext,
     ) -> PlanningContext:
