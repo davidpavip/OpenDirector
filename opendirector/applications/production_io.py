@@ -51,6 +51,20 @@ class ProductionIO:
             },
         )
 
+    def save_planning(
+        self,
+        paths: ProductionPaths,
+        markdown: str,
+    ) -> Path:
+        paths.root.mkdir(parents=True, exist_ok=True)
+
+        paths.planning.write_text(
+            markdown,
+            encoding="utf-8",
+        )
+
+        return paths.planning
+
     def save_blueprint(
         self,
         paths: ProductionPaths,
@@ -72,3 +86,24 @@ class ProductionIO:
         )
 
         return paths.blueprint, history_path
+
+
+@dataclass(frozen=True)
+class ProductionPaths:
+    root: Path
+    source: Path
+    planning: Path
+    blueprint: Path
+    history: Path
+
+    @classmethod
+    def from_root(cls, root: Path) -> "ProductionPaths":
+        resolved = root.expanduser().resolve()
+
+        return cls(
+            root=resolved,
+            source=resolved / "source.md",
+            planning=resolved / "planning.md",
+            blueprint=resolved / "blueprint.md",
+            history=resolved / "history",
+        )

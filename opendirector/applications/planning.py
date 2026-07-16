@@ -22,6 +22,12 @@ from opendirector.planning import (
     RoleAssignment,
 )
 from opendirector.providers import MockLanguageProvider
+from opendirector.applications.little_robot_planning import (
+    build_little_robot_planning,
+)
+from opendirector.applications.planning_renderer import (
+    PlanningMarkdownRenderer,
+)
 
 
 class PlanningApplication:
@@ -36,10 +42,22 @@ class PlanningApplication:
         studio: Studio | None = None,
         production_io: ProductionIO | None = None,
         renderer: BlueprintMarkdownRenderer | None = None,
+        planning_renderer: PlanningMarkdownRenderer | None = None,
     ) -> None:
         self.studio = studio or self._build_default_studio()
         self.production_io = production_io or ProductionIO()
         self.renderer = renderer or BlueprintMarkdownRenderer()
+        self.planning_renderer = planning_renderer or PlanningMarkdownRenderer()
+
+    ##    def __init__(
+    ##        self,
+    ##        studio: Studio | None = None,
+    ##        production_io: ProductionIO | None = None,
+    ##        renderer: BlueprintMarkdownRenderer | None = None,
+    ##    ) -> None:
+    ##        self.studio = studio or self._build_default_studio()
+    ##        self.production_io = production_io or ProductionIO()
+    ##        self.renderer = renderer or BlueprintMarkdownRenderer()
 
     async def run(
         self,
@@ -69,6 +87,14 @@ class PlanningApplication:
         draft = replace(
             draft,
             assignments=self._build_assignments(draft),
+        )
+
+        planning_document = build_little_robot_planning(draft)
+        planning_markdown = self.planning_renderer.render(planning_document)
+
+        self.production_io.save_planning(
+            paths=paths,
+            markdown=planning_markdown,
         )
 
         approved = draft.approve(approved_by)

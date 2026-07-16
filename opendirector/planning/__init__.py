@@ -13,6 +13,16 @@ from .operator import PlanningOperator
 from .program import PlanningProgram
 from .evolution import BlueprintMutation, BlueprintSeed
 from .creative_operator import PlanningCreativeOperator
+from .artifacts import (
+    IdeaCritique,
+    PlanningDocument,
+    ProductionUnderstanding,
+    SceneDecision,
+    SceneIdea,
+    ScenePlanning,
+    SceneUnderstanding,
+    ShotPlan,
+)
 
 __all__ = [
     "AssignmentMode",
@@ -29,4 +39,12 @@ __all__ = [
     "BlueprintMutation",
     "BlueprintSeed",
     "PlanningCreativeOperator",
+    "IdeaCritique",
+    "PlanningDocument",
+    "ProductionUnderstanding",
+    "SceneDecision",
+    "SceneIdea",
+    "ScenePlanning",
+    "SceneUnderstanding",
+    "ShotPlan",
 ]
