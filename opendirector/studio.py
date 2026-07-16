@@ -19,6 +19,7 @@ from opendirector.planning import (
     PlanningContext,
     PlanningProgram,
 )
+from opendirector.professions import Profession, ProfessionRegistry
 
 
 class Studio:
@@ -35,6 +36,7 @@ class Studio:
         self.crew = Crew()
         self.providers = ProviderRegistry()
         self.knowledge = KnowledgeBase()
+        self.professions = ProfessionRegistry()
 
     async def run(
         self,
@@ -110,5 +112,10 @@ class Studio:
                 [],
             )
         )
-
         return result.planning
+
+    def register_profession(
+        self,
+        profession: Profession,
+    ) -> Profession:
+        return self.professions.register(profession)
