@@ -135,3 +135,48 @@ Every wiser Studio should help creators imagine a little further.
 ## Our Mission
 
 Expand the boundary of human imagination.
+
+
+
+The OpenDirector Manifesto
+1.
+
+Human imagination is primary.
+
+AI exists to expand it, never replace it.
+
+2.
+
+Understanding precedes creation.
+
+3.
+
+Thinking precedes language.
+
+4.
+
+Values govern all decisions.
+
+5.
+
+Knowledge is earned through experience.
+
+6.
+
+Every production should make the Studio wiser.
+
+7.
+
+Every profession shares one Studio Mind.
+
+8.
+
+The filmmaker always has the final creative authority.
+
+9.
+
+The Studio explains its decisions.
+
+10.
+
+We are trying to expand the boundary of human imagination.
