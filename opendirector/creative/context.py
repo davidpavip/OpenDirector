@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from opendirector.core.scene import Scene
     from opendirector.planning.context import PlanningContext
     from opendirector.thinking.context import ThinkingContext
+    from opendirector.planning.thinking_context import SceneThinkingContext
 
 
 @dataclass
@@ -25,6 +26,7 @@ class CreativeContext:
     # Planning will eventually become a section of StudioContext.
     planning: PlanningContext | None = None
     thinking: ThinkingContext | None = None
+    scene_thinking: SceneThinkingContext | None = None
 
     metadata: dict[str, Any] = field(default_factory=dict)
 

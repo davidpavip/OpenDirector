@@ -23,6 +23,13 @@ from .artifacts import (
     SceneUnderstanding,
     ShotPlan,
 )
+from .thinking_context import SceneThinkingContext
+from .thinking_operators import (
+    CritiqueSceneOperator,
+    DecideSceneOperator,
+    ImagineSceneOperator,
+    PlanSceneShotsOperator,
+)
 
 __all__ = [
     "AssignmentMode",
@@ -47,4 +54,9 @@ __all__ = [
     "ScenePlanning",
     "SceneUnderstanding",
     "ShotPlan",
+    "CritiqueSceneOperator",
+    "DecideSceneOperator",
+    "ImagineSceneOperator",
+    "PlanSceneShotsOperator",
+    "SceneThinkingContext",
 ]
