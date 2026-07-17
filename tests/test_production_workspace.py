@@ -18,6 +18,7 @@ def test_workspace_creates_canonical_directories(
     workspace.create()
     scene = workspace.scene("scene-001")
     scene.create()
+    assert scene.shots.name == "shots.md"
 
     assert workspace.scenes.is_dir()
     assert workspace.runtime.is_dir()

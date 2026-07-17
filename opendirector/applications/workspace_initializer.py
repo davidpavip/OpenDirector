@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+from opendirector.applications.shot_renderer import (
+    ShotMarkdownRenderer,
+)
 from opendirector.planning import PlanningDocument
 from opendirector.production import (
     ProductionState,
@@ -12,13 +15,15 @@ from opendirector.production import (
 
 
 class WorkspaceInitializer:
-    """Create runtime state from a completed PlanningDocument."""
+    """Create scene workspaces from a completed PlanningDocument."""
 
     def __init__(
         self,
         store: ProductionStateStore | None = None,
+        shot_renderer: ShotMarkdownRenderer | None = None,
     ) -> None:
         self.store = store or ProductionStateStore()
+        self.shot_renderer = shot_renderer or ShotMarkdownRenderer()
 
     def initialize(
         self,
@@ -45,6 +50,7 @@ class WorkspaceInitializer:
             start=1,
         ):
             scene_workspace = workspace.scene(scene.id)
+            scene_workspace.create()
 
             shot_states = {
                 shot.id: ShotState(
@@ -75,6 +81,13 @@ class WorkspaceInitializer:
             self.store.save_scene(
                 scene_workspace,
                 scene_state,
+            )
+
+            shots_markdown = self.shot_renderer.render(scene)
+
+            self.store.save_shots(
+                scene_workspace,
+                shots_markdown,
             )
 
             scene_index.append(

@@ -139,3 +139,30 @@ class ProductionStateStore:
             raise ValueError(f"State file must contain a JSON object: {path}")
 
         return value
+
+    def save_shots(
+        self,
+        workspace: SceneWorkspace,
+        markdown: str,
+    ) -> Path:
+        """Save the filmmaker-editable shot-plan document."""
+
+        workspace.create()
+
+        workspace.shots.write_text(
+            markdown,
+            encoding="utf-8",
+        )
+
+        return workspace.shots
+
+    def load_shots(
+        self,
+        workspace: SceneWorkspace,
+    ) -> str:
+        """Load the current filmmaker-edited shot plan."""
+
+        if not workspace.shots.is_file():
+            raise FileNotFoundError(f"Shot-plan document not found: {workspace.shots}")
+
+        return workspace.shots.read_text(encoding="utf-8")

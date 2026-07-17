@@ -1296,3 +1296,115 @@ Creative Cycle
 Creative Operator
 
 Every future capability—including planning, rendering, editing, reviewing, learning, and publishing—will be implemented as Creative Programs rather than specialized runtimes.
+
+
+
+                          OpenDirector Studio
+
+                               Human
+                                 │
+                                 ▼
+                      opendirector plan
+                                 │
+                                 ▼
+                       ┌─────────────────┐
+                       │ Creative Engine │
+                       └─────────────────┘
+                                 │
+                    Thinking Circle (per Scene)
+                                 │
+       ┌───────────────┬─────────┼──────────┬──────────────┐
+       ▼               ▼         ▼          ▼              ▼
+  Understand       Imagine   Critique    Decide      Plan Shots
+       │               │         │          │              │
+       └───────────────┴─────────┴──────────┴──────────────┘
+                                 │
+                                 ▼
+                      PlanningDocument (Objects)
+                                 │
+                                 ▼
+                          planning.md
+                                 │
+                                 ▼
+                    Workspace Initialization
+                                 │
+     ┌───────────────────────────┴───────────────────────────┐
+     ▼                                                       ▼
+Human Workspace                                      Studio Workspace
+(Markdown)                                           (.opendirector)
+
+source.md                                            production.json
+planning.md                                          scene_index.json
+blueprint.md                                         scene state
+review.md                                            runtime state
+
+     ▼                                                       ▼
+               Scene-Centric Workspace
+               
+               
+               
+               
+               
+               
+                                Production Flow
+                      │
+                      ▼
+             Scene 001 Planning
+                      │
+              Thinking Circle
+                      │
+        Understanding
+              ↓
+           Ideas
+              ↓
+          Critique
+              ↓
+          Decision
+              ↓
+          Shot Plan
+                      │
+                      ▼
+              sketch command
+                      │
+               storyboard assets
+                      │
+                      ▼
+             animate command
+                      │
+                 shot videos
+                      │
+                      ▼
+             compose command
+                      │
+                  music/audio
+                      │
+                      ▼
+               edit command
+                      │
+               assembled scene
+                      │
+                      ▼
+              review command
+
+
+
+
+                    HUMAN THINKS
+                          │
+                 edits Markdown
+                          │
+                          ▼
+                OpenDirector THINKS
+               (Creative Engine)
+                          │
+                updates JSON State
+                          │
+                          ▼
+               Providers CREATE
+                          │
+                generate media assets
+                          │
+                          ▼
+                Human REVIEWS
+                          │
+                     Repeat

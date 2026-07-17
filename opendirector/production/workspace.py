@@ -43,9 +43,14 @@ class ProductionWorkspace:
         )
 
     def scene(self, scene_id: str) -> "SceneWorkspace":
+        normalized = scene_id.strip()
+
+        if not normalized:
+            raise ValueError("Scene id cannot be empty")
+
         return SceneWorkspace.from_root(
-            self.scenes / scene_id,
-            scene_id=scene_id,
+            root=self.scenes / normalized,
+            scene_id=normalized,
         )
 
     def create(self) -> None:
@@ -77,11 +82,16 @@ class SceneWorkspace:
         root: Path,
         scene_id: str,
     ) -> "SceneWorkspace":
+        normalized = scene_id.strip()
+
+        if not normalized:
+            raise ValueError("Scene id cannot be empty")
+
         resolved = root.expanduser().resolve()
         products = resolved / "products"
 
         return cls(
-            scene_id=scene_id,
+            scene_id=normalized,
             root=resolved,
             artifacts=resolved / "artifacts",
             products=products,
@@ -89,7 +99,7 @@ class SceneWorkspace:
             animation=products / "animation",
             audio=products / "audio",
             state=resolved / "state.json",
-            shots=resolved / "shots.json",
+            shots=resolved / "shots.md",
         )
 
     def create(self) -> None:
