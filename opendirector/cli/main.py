@@ -8,6 +8,10 @@ from pathlib import Path
 import typer
 
 from opendirector.applications import PlanningApplication
+from opendirector.applications import (
+    PlanningApplication,
+    SketchApplication,
+)
 
 app = typer.Typer(
     name="opendirector",
@@ -78,6 +82,67 @@ def plan(
         bold=True,
     )
     typer.echo(f"Blueprint: {blueprint_path}")
+
+
+@app.command()
+def sketch(
+    production: Path = typer.Argument(
+        ...,
+        help="Production directory.",
+        exists=True,
+        file_okay=False,
+        dir_okay=True,
+        readable=True,
+        resolve_path=True,
+    ),
+    scene_id: str = typer.Argument(
+        ...,
+        help="Scene identifier, for example scene-001.",
+    ),
+    force: bool = typer.Option(
+        False,
+        "--force",
+        help="Regenerate sketches that already exist.",
+    ),
+) -> None:
+    """Create visual sketches for one planned scene."""
+
+    typer.echo()
+    typer.secho(
+        "OpenDirector Sketch",
+        fg=typer.colors.CYAN,
+        bold=True,
+    )
+    typer.echo(f"Production: {production.name}")
+    typer.echo(f"Scene:      {scene_id}")
+    typer.echo()
+
+    application = SketchApplication()
+
+    try:
+        products = asyncio.run(
+            application.run(
+                production_dir=production,
+                scene_id=scene_id,
+                force=force,
+            )
+        )
+    except Exception as exc:
+        typer.secho(
+            f"Sketch failed: {exc}",
+            fg=typer.colors.RED,
+            err=True,
+        )
+        raise typer.Exit(code=1) from exc
+
+    typer.secho(
+        "Scene sketch completed.",
+        fg=typer.colors.GREEN,
+        bold=True,
+    )
+
+    for product in products:
+        typer.echo(f"Sketch: {product}")
 
 
 @app.command()

@@ -10,6 +10,11 @@ class ShotState:
 
     shot_id: str
     status: str = "pending"
+
+    sketch_status: str = "pending"
+    sketch_product: str | None = None
+    sketch_provider: str | None = None
+
     approved_product: str | None = None
     metadata: dict[str, Any] = field(default_factory=dict)
 
@@ -39,9 +44,24 @@ class SceneState:
     ) -> "SceneState":
         raw_shots = data.get("shots", {})
 
-        shots = {
-            shot_id: ShotState(**shot_data) for shot_id, shot_data in raw_shots.items()
-        }
+        shots = {}
+
+        for shot_id, shot_data in raw_shots.items():
+            payload = dict(shot_data)
+            payload.setdefault("shot_id", shot_id)
+
+            shots[shot_id] = ShotState(
+                shot_id=payload["shot_id"],
+                status=payload.get("status", "pending"),
+                sketch_status=payload.get(
+                    "sketch_status",
+                    "pending",
+                ),
+                sketch_product=payload.get("sketch_product"),
+                sketch_provider=payload.get("sketch_provider"),
+                approved_product=payload.get("approved_product"),
+                metadata=dict(payload.get("metadata", {})),
+            )
 
         return cls(
             scene_id=data["scene_id"],
