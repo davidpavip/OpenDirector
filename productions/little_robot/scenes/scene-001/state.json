@@ -1,0 +1,47 @@
+{
+  "continuity": {
+    "requirements": [
+      "Introduce the boy's established appearance.",
+      "Introduce the robot before activation.",
+      "Establish sunset lighting."
+    ]
+  },
+  "open_questions": [
+    "How visibly damaged should the robot appear?"
+  ],
+  "planning_stage": "decided",
+  "production_stage": "not_started",
+  "scene_id": "scene-001",
+  "selected_idea_ids": [
+    "idea-a",
+    "idea-c"
+  ],
+  "shots": {
+    "shot-001": {
+      "approved_product": null,
+      "metadata": {},
+      "shot_id": "shot-001",
+      "status": "pending"
+    },
+    "shot-002": {
+      "approved_product": null,
+      "metadata": {},
+      "shot_id": "shot-002",
+      "status": "pending"
+    },
+    "shot-003": {
+      "approved_product": null,
+      "metadata": {},
+      "shot_id": "shot-003",
+      "status": "pending"
+    },
+    "shot-004": {
+      "approved_product": null,
+      "metadata": {},
+      "shot_id": "shot-004",
+      "status": "pending"
+    }
+  },
+  "status": "draft",
+  "title": "The Discovery"
+}

@@ -1,0 +1,22 @@
+{
+  "scenes": [
+    {
+      "order": 1,
+      "scene_id": "scene-001",
+      "status": "decided",
+      "title": "The Discovery"
+    },
+    {
+      "order": 2,
+      "scene_id": "scene-002",
+      "status": "ideas",
+      "title": "The First Activation"
+    },
+    {
+      "order": 3,
+      "scene_id": "scene-003",
+      "status": "understanding",
+      "title": "The Journey Toward the Village"
+    }
+  ]
+}

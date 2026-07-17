@@ -1,0 +1,19 @@
+{
+  "continuity": {
+    "requirements": [
+      "Robot remains slightly clumsy.",
+      "Golden sunset transitions into blue twilight.",
+      "Maintain the established mountain path."
+    ]
+  },
+  "open_questions": [
+    "What obstacle should reveal their growing trust?"
+  ],
+  "planning_stage": "understanding",
+  "production_stage": "not_started",
+  "scene_id": "scene-003",
+  "selected_idea_ids": [],
+  "shots": {},
+  "status": "draft",
+  "title": "The Journey Toward the Village"
+}

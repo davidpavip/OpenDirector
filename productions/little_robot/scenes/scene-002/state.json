@@ -1,0 +1,19 @@
+{
+  "continuity": {
+    "requirements": [
+      "Continue from the robot's inactive position.",
+      "Preserve the same location and twilight progression."
+    ]
+  },
+  "open_questions": [
+    "Should the robot speak?",
+    "Should the first repair attempt fail?"
+  ],
+  "planning_stage": "ideas",
+  "production_stage": "not_started",
+  "scene_id": "scene-002",
+  "selected_idea_ids": [],
+  "shots": {},
+  "status": "draft",
+  "title": "The First Activation"
+}

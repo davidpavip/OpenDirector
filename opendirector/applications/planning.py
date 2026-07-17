@@ -7,12 +7,21 @@ from opendirector import Studio
 from opendirector.applications.blueprint_renderer import (
     BlueprintMarkdownRenderer,
 )
+from opendirector.applications.little_robot_planning import (
+    build_little_robot_planning,
+)
 from opendirector.applications.planning_program import (
     build_planning_program,
+)
+from opendirector.applications.planning_renderer import (
+    PlanningMarkdownRenderer,
 )
 from opendirector.applications.production_io import (
     ProductionIO,
     ProductionPaths,
+)
+from opendirector.applications.workspace_initializer import (
+    WorkspaceInitializer,
 )
 from opendirector.creative import CreativeContext
 from opendirector.crew import Editor
@@ -21,20 +30,24 @@ from opendirector.planning import (
     ProductionBlueprint,
     RoleAssignment,
 )
+from opendirector.production import ProductionWorkspace
 from opendirector.providers import MockLanguageProvider
-from opendirector.applications.little_robot_planning import (
-    build_little_robot_planning,
-)
-from opendirector.applications.planning_renderer import (
-    PlanningMarkdownRenderer,
-)
 
 
 class PlanningApplication:
     """Plan a production from normalized Markdown.
 
-    The application owns orchestration and file handling. The Creative
-    Engine owns execution. The Evolution Engine owns blueprint evolution.
+    The application coordinates:
+
+    - production file loading;
+    - blueprint evolution;
+    - scene-centered planning artifacts;
+    - runtime workspace initialization;
+    - human approval;
+    - blueprint persistence.
+
+    The Creative Engine owns execution.
+    The Evolution Engine owns blueprint evolution.
     """
 
     def __init__(
@@ -43,27 +56,21 @@ class PlanningApplication:
         production_io: ProductionIO | None = None,
         renderer: BlueprintMarkdownRenderer | None = None,
         planning_renderer: PlanningMarkdownRenderer | None = None,
+        workspace_initializer: WorkspaceInitializer | None = None,
     ) -> None:
         self.studio = studio or self._build_default_studio()
         self.production_io = production_io or ProductionIO()
         self.renderer = renderer or BlueprintMarkdownRenderer()
         self.planning_renderer = planning_renderer or PlanningMarkdownRenderer()
-
-    ##    def __init__(
-    ##        self,
-    ##        studio: Studio | None = None,
-    ##        production_io: ProductionIO | None = None,
-    ##        renderer: BlueprintMarkdownRenderer | None = None,
-    ##    ) -> None:
-    ##        self.studio = studio or self._build_default_studio()
-    ##        self.production_io = production_io or ProductionIO()
-    ##        self.renderer = renderer or BlueprintMarkdownRenderer()
+        self.workspace_initializer = workspace_initializer or WorkspaceInitializer()
 
     async def run(
         self,
         production_dir: Path,
         approved_by: str = "Gilbert",
     ) -> Path:
+        """Run planning and return the generated blueprint path."""
+
         paths = ProductionPaths.from_root(production_dir)
         source = self.production_io.load_source(paths)
 
@@ -89,7 +96,9 @@ class PlanningApplication:
             assignments=self._build_assignments(draft),
         )
 
+        # Build and save the human-editable scene-centered notebook.
         planning_document = build_little_robot_planning(draft)
+
         planning_markdown = self.planning_renderer.render(planning_document)
 
         self.production_io.save_planning(
@@ -97,12 +106,20 @@ class PlanningApplication:
             markdown=planning_markdown,
         )
 
+        # Initialize machine-readable production and scene state.
+        self.workspace_initializer.initialize(
+            workspace=ProductionWorkspace.from_root(production_dir),
+            document=planning_document,
+        )
+
+        # Human approval remains a separate boundary.
         approved = draft.approve(approved_by)
-        markdown = self.renderer.render(approved)
+
+        blueprint_markdown = self.renderer.render(approved)
 
         blueprint_path, _ = self.production_io.save_blueprint(
             paths=paths,
-            markdown=markdown,
+            markdown=blueprint_markdown,
             version=approved.version,
         )
 

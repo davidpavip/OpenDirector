@@ -1,0 +1,15 @@
+{
+  "continuity": {},
+  "current_scene_id": "scene-001",
+  "global_constraints": [
+    "Family-friendly",
+    "Do not glorify violence",
+    "Preserve character identity",
+    "Use the smallest effective cast",
+    "Use minimal dialogue.",
+    "The relationship must drive every major scene."
+  ],
+  "production_id": "little_robot",
+  "status": "planning",
+  "title": "The Little Robot"
+}
