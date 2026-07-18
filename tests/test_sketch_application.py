@@ -9,6 +9,8 @@ from opendirector.production import (
     ShotState,
 )
 
+from opendirector.artifact import Artifact, Kind
+
 SHOTS_MARKDOWN = """\
 ---
 artifact: shot-plan
@@ -120,16 +122,17 @@ def test_sketch_application_creates_one_product_per_shot(
 ):
     workspace, production_dir = prepare_workspace(tmp_path)
 
-    products = asyncio.run(
+    artifacts = asyncio.run(
         SketchApplication().run(
             production_dir=production_dir,
             scene_id="scene-001",
         )
     )
 
-    assert len(products) == 2
-    assert all(path.is_file() for path in products)
-    assert products[0].suffix == ".svg"
+    assert len(artifacts) == 2
+    assert all(artifact.exists for artifact in artifacts)
+    assert all(artifact.kind is Kind.IMAGE for artifact in artifacts)
+    assert artifacts[0].location.suffix == ".svg"
 
     scene = workspace.scene("scene-001")
     assert (scene.sketch / "shot-001.svg").is_file()
@@ -165,14 +168,14 @@ def test_sketch_uses_filmmaker_revision(
 ):
     _, production_dir = prepare_workspace(tmp_path)
 
-    products = asyncio.run(
+    artifacts = asyncio.run(
         SketchApplication().run(
             production_dir=production_dir,
             scene_id="scene-001",
         )
     )
 
-    svg = products[0].read_text(encoding="utf-8")
+    svg = artifacts[0].location.read_text(encoding="utf-8")
 
     assert "slightly lower camera angle" in svg
 
@@ -190,7 +193,7 @@ def test_sketch_skips_existing_products_unless_forced(
         )
     )
 
-    original = first[0].read_text(encoding="utf-8")
+    original = first[0].location.read_text(encoding="utf-8")
 
     second = asyncio.run(
         application.run(
@@ -199,7 +202,23 @@ def test_sketch_skips_existing_products_unless_forced(
         )
     )
 
-    assert second[0].read_text(encoding="utf-8") == original
+    assert second[0].metadata["reused"] is True
+    assert second[0].location.read_text(encoding="utf-8") == original
+
+
+def test_sketch_application_returns_artifacts(
+    tmp_path: Path,
+):
+    _, production_dir = prepare_workspace(tmp_path)
+
+    artifacts = asyncio.run(
+        SketchApplication().run(
+            production_dir=production_dir,
+            scene_id="scene-001",
+        )
+    )
+
+    assert all(isinstance(artifact, Artifact) for artifact in artifacts)
 
 
 from typer.testing import CliRunner

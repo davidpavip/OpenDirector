@@ -1,6 +1,5 @@
 from .models import (
     SketchRequest,
-    SketchResult,
     SketchShot,
 )
 from .providers import (
@@ -17,7 +16,6 @@ __all__ = [
     "ParsedShotDocument",
     "SketchProvider",
     "SketchRequest",
-    "SketchResult",
     "SketchShot",
     "ShotMarkdownParser",
 ]

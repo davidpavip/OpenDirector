@@ -15,6 +15,8 @@ from opendirector.sketching import (
     SketchRequest,
     ShotMarkdownParser,
 )
+from opendirector.artifact import Artifact
+from opendirector.artifact import Artifact, Kind
 
 
 class SketchApplication:
@@ -35,7 +37,7 @@ class SketchApplication:
         production_dir: Path,
         scene_id: str,
         force: bool = False,
-    ) -> tuple[Path, ...]:
+    ) -> tuple[Artifact, ...]:
         workspace = ProductionWorkspace.from_root(production_dir)
         scene_workspace = workspace.scene(scene_id)
 
@@ -53,7 +55,7 @@ class SketchApplication:
 
         state = self.store.load_scene(scene_workspace)
 
-        results: list[Path] = []
+        results: list[Artifact] = []
 
         for shot in document.shots:
             current = state.shots.get(
@@ -66,11 +68,35 @@ class SketchApplication:
                 and current.sketch_status == "completed"
                 and current.sketch_product
             ):
-                existing = (production_dir / current.sketch_product).resolve()
+                existing = (workspace.root / current.sketch_product).resolve()
 
                 if existing.is_file():
-                    results.append(existing)
+                    results.append(
+                        Artifact(
+                            production_id=workspace.root.name,
+                            scene_id=scene_id,
+                            shot_id=shot.shot_id,
+                            kind=Kind.IMAGE,
+                            location=existing,
+                            media_type=self._media_type(existing),
+                            metadata={
+                                "provider_id": current.sketch_provider,
+                                "reused": True,
+                            },
+                        )
+                    )
                     continue
+
+            ##            if (
+            ##                not force
+            ##                and current.sketch_status == "completed"
+            ##                and current.sketch_product
+            ##            ):
+            ##                existing = (production_dir / current.sketch_product).resolve()
+            ##
+            ##                if existing.is_file():
+            ##                    results.append(existing)
+            ##                    continue
 
             request = SketchRequest(
                 production_id=workspace.root.name,
@@ -80,24 +106,27 @@ class SketchApplication:
                 output_directory=scene_workspace.sketch,
             )
 
-            result = await self.provider.sketch(request)
-
-            relative_product = result.product_path.relative_to(workspace.root)
+            artifact = await self.provider.sketch(request)
+            relative_artifact = artifact.location.relative_to(workspace.root)
+            ##            result = await self.provider.sketch(request)
+            ##            relative_product = result.path.relative_to(workspace.root)
 
             state.shots[shot.shot_id] = replace(
                 current,
                 status="in_progress",
                 sketch_status="completed",
-                sketch_product=str(relative_product),
-                sketch_provider=result.provider_id,
+                sketch_product=str(relative_artifact),
+                sketch_provider=artifact.metadata.get("provider_id"),
                 metadata={
                     **current.metadata,
                     "camera": shot.camera,
-                    "duration_seconds": (shot.duration_seconds),
+                    "duration_seconds": shot.duration_seconds,
+                    "artifact_id": artifact.id,
+                    "media_type": artifact.media_type,
                 },
             )
 
-            results.append(result.product_path)
+            results.append(artifact)
 
         state = self._complete_scene_sketch_state(state)
 
@@ -118,3 +147,14 @@ class SketchApplication:
             state.production_stage = "sketched"
 
         return state
+
+    def _media_type(self, path: Path) -> str:
+        suffix = path.suffix.lower()
+
+        return {
+            ".svg": "image/svg+xml",
+            ".png": "image/png",
+            ".jpg": "image/jpeg",
+            ".jpeg": "image/jpeg",
+            ".webp": "image/webp",
+        }.get(suffix, "application/octet-stream")

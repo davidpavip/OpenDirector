@@ -5,10 +5,13 @@ from html import escape
 from pathlib import Path
 from textwrap import wrap
 
-from opendirector.sketching.models import (
-    SketchRequest,
-    SketchResult,
-)
+##from opendirector.sketching.models import (
+##    SketchRequest,
+##    SketchResult,
+##)
+##from opendirector.products import ProductType, SketchProduct
+
+from opendirector.artifact import Artifact, Kind
 
 
 class SketchProvider(ABC):
@@ -20,7 +23,7 @@ class SketchProvider(ABC):
     async def sketch(
         self,
         request: SketchRequest,
-    ) -> SketchResult:
+    ) -> Artifact:
         raise NotImplementedError
 
 
@@ -36,7 +39,7 @@ class MockSketchProvider(SketchProvider):
     async def sketch(
         self,
         request: SketchRequest,
-    ) -> SketchResult:
+    ) -> Artifact:
         request.output_directory.mkdir(
             parents=True,
             exist_ok=True,
@@ -49,14 +52,17 @@ class MockSketchProvider(SketchProvider):
             encoding="utf-8",
         )
 
-        return SketchResult(
+        return Artifact(
+            production_id=request.production_id,
+            scene_id=request.scene_id,
             shot_id=request.shot.shot_id,
-            provider_id=self.provider_id,
-            product_path=output_path,
+            kind=Kind.IMAGE,
+            location=output_path,
+            media_type="image/svg+xml",
             metadata={
-                "scene_id": request.scene_id,
+                "provider_id": self.provider_id,
                 "camera": request.shot.camera,
-                "duration_seconds": (request.shot.duration_seconds),
+                "duration_seconds": request.shot.duration_seconds,
             },
         )
 

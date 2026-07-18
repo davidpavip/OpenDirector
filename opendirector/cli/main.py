@@ -120,7 +120,7 @@ def sketch(
     application = SketchApplication()
 
     try:
-        products = asyncio.run(
+        artifact = asyncio.run(
             application.run(
                 production_dir=production,
                 scene_id=scene_id,
@@ -141,20 +141,19 @@ def sketch(
         bold=True,
     )
 
-    for product in products:
-        typer.echo(f"Sketch: {product}")
+    for artifact in artifacts:
+        typer.echo(f"Sketch: {artifact.location}")
 
+    @app.command()
+    def version() -> None:
+        """Display the installed OpenDirector version."""
 
-@app.command()
-def version() -> None:
-    """Display the installed OpenDirector version."""
+        try:
+            value = package_version("opendirector")
+        except PackageNotFoundError:
+            value = "development"
 
-    try:
-        value = package_version("opendirector")
-    except PackageNotFoundError:
-        value = "development"
-
-    typer.echo(f"OpenDirector {value}")
+        typer.echo(f"OpenDirector {value}")
 
 
 def main() -> None:

@@ -4,6 +4,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+# from opendirector.products import SketchProduct
+
 
 @dataclass(frozen=True)
 class SketchShot:
@@ -43,20 +45,22 @@ class SketchRequest:
     metadata: dict[str, Any] = field(default_factory=dict)
 
 
-@dataclass(frozen=True)
-class SketchResult:
-    """Visual artifact returned by a sketch provider."""
+# SketchResult = SketchProduct
 
-    shot_id: str
-    provider_id: str
-    product_path: Path
-
-    media_type: str = "image/svg+xml"
-    metadata: dict[str, Any] = field(default_factory=dict)
-
-    def __post_init__(self) -> None:
-        if not self.shot_id.strip():
-            raise ValueError("SketchResult shot_id cannot be empty")
-
-        if not self.provider_id.strip():
-            raise ValueError("SketchResult provider_id cannot be empty")
+##@dataclass(frozen=True)
+##class SketchResult:
+##    """Visual artifact returned by a sketch provider."""
+##
+##    shot_id: str
+##    provider_id: str
+##    product_path: Path
+##
+##    media_type: str = "image/svg+xml"
+##    metadata: dict[str, Any] = field(default_factory=dict)
+##
+##    def __post_init__(self) -> None:
+##        if not self.shot_id.strip():
+##            raise ValueError("SketchResult shot_id cannot be empty")
+##
+##        if not self.provider_id.strip():
+##            raise ValueError("SketchResult provider_id cannot be empty")
