@@ -66,9 +66,9 @@ class SketchApplication:
             if (
                 not force
                 and current.sketch_status == "completed"
-                and current.sketch_product
+                and current.sketch_artifact
             ):
-                existing = (workspace.root / current.sketch_product).resolve()
+                existing = (workspace.root / current.sketch_artifact).resolve()
 
                 if existing.is_file():
                     results.append(
@@ -87,17 +87,6 @@ class SketchApplication:
                     )
                     continue
 
-            ##            if (
-            ##                not force
-            ##                and current.sketch_status == "completed"
-            ##                and current.sketch_product
-            ##            ):
-            ##                existing = (production_dir / current.sketch_product).resolve()
-            ##
-            ##                if existing.is_file():
-            ##                    results.append(existing)
-            ##                    continue
-
             request = SketchRequest(
                 production_id=workspace.root.name,
                 scene_id=scene_id,
@@ -108,14 +97,15 @@ class SketchApplication:
 
             artifact = await self.provider.sketch(request)
             relative_artifact = artifact.location.relative_to(workspace.root)
-            ##            result = await self.provider.sketch(request)
-            ##            relative_product = result.path.relative_to(workspace.root)
+
+            print("relative_artifact =", relative_artifact)
+            print("type =", type(relative_artifact))
 
             state.shots[shot.shot_id] = replace(
                 current,
                 status="in_progress",
                 sketch_status="completed",
-                sketch_product=str(relative_artifact),
+                sketch_artifact=str(relative_artifact),
                 sketch_provider=artifact.metadata.get("provider_id"),
                 metadata={
                     **current.metadata,

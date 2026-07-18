@@ -160,7 +160,7 @@ def test_sketch_application_updates_runtime_state(
 
     assert shot.sketch_status == "completed"
     assert shot.sketch_provider == "mock.sketch"
-    assert shot.sketch_product == ("scenes/scene-001/products/sketch/" "shot-001.svg")
+    assert shot.sketch_artifact == ("scenes/scene-001/products/sketch/" "shot-001.svg")
 
 
 def test_sketch_uses_filmmaker_revision(
@@ -179,8 +179,7 @@ def test_sketch_uses_filmmaker_revision(
 
     assert "slightly lower camera angle" in svg
 
-
-def test_sketch_skips_existing_products_unless_forced(
+def test_sketch_skips_existing_artifacts_unless_forced(
     tmp_path: Path,
 ):
     _, production_dir = prepare_workspace(tmp_path)
