@@ -6,6 +6,10 @@ from .state import (
 )
 from .store import ProductionStateStore
 from .workspace import ProductionWorkspace, SceneWorkspace
+from .specification import (
+    ProductionSpecification,
+    ProductionSpecificationParser,
+)
 
 __all__ = [
     "ProductionState",
@@ -15,4 +19,6 @@ __all__ = [
     "SceneState",
     "SceneWorkspace",
     "ShotState",
+    "ProductionSpecification",
+    "ProductionSpecificationParser",
 ]
