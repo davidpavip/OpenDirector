@@ -33,6 +33,9 @@ from opendirector.planning import (
 from opendirector.production import ProductionWorkspace
 from opendirector.providers import MockLanguageProvider
 
+from opendirector.production import (
+    ProductionSpecificationParser,
+)
 
 class PlanningApplication:
     """Plan a production from normalized Markdown.
@@ -57,13 +60,17 @@ class PlanningApplication:
         renderer: BlueprintMarkdownRenderer | None = None,
         planning_renderer: PlanningMarkdownRenderer | None = None,
         workspace_initializer: WorkspaceInitializer | None = None,
+        specification_parser: ProductionSpecificationParser | None = None,
     ) -> None:
         self.studio = studio or self._build_default_studio()
         self.production_io = production_io or ProductionIO()
         self.renderer = renderer or BlueprintMarkdownRenderer()
         self.planning_renderer = planning_renderer or PlanningMarkdownRenderer()
         self.workspace_initializer = workspace_initializer or WorkspaceInitializer()
-
+        self.specification_parser = (
+            specification_parser
+            or ProductionSpecificationParser()
+        )    
     async def run(
         self,
         production_dir: Path,

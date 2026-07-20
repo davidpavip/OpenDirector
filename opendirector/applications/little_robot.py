@@ -33,6 +33,7 @@ from opendirector.planning.operators import (
     SeedBlueprintsOperator,
 )
 from opendirector.providers import MockLanguageProvider
+from opendirector.production import ProductionSpecificationParser
 
 PRODUCTION_DIR = Path("productions/little_robot")
 SOURCE_PATH = PRODUCTION_DIR / "source.md"
@@ -56,6 +57,9 @@ def load_source() -> SourceDocument:
     return SourceDocument(
         title="The Little Robot",
         content=SOURCE_PATH.read_text(encoding="utf-8"),
+        production_specification = (
+            self.specification_parser.parse(source_text)
+        )
         metadata={
             "production_path": str(PRODUCTION_DIR),
             "input_format": "markdown",

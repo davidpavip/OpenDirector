@@ -43,7 +43,7 @@ class ImagineSceneOperator(CreativeOperator):
     ) -> CreativeContext:
         thinking, scene = require_scene(context)
 
-        ideas = await self.policy.imagine(scene)
+        ideas = await self.policy.imagine(scene, thinking)
 
         thinking.scene = replace(
             scene,
@@ -70,7 +70,7 @@ class CritiqueSceneOperator(CreativeOperator):
     ) -> CreativeContext:
         thinking, scene = require_scene(context)
 
-        critiques = await self.policy.critique(scene)
+        critiques = await self.policy.critique(scene, thinking)
 
         thinking.scene = replace(
             scene,
@@ -100,7 +100,7 @@ class DecideSceneOperator(CreativeOperator):
     ) -> CreativeContext:
         thinking, scene = require_scene(context)
 
-        decision = await self.policy.decide(scene)
+        decision = await self.policy.decide(scene, thinking)
 
         thinking.scene = replace(
             scene,
@@ -130,7 +130,7 @@ class PlanSceneShotsOperator(CreativeOperator):
     ) -> CreativeContext:
         thinking, scene = require_scene(context)
 
-        shots = await self.policy.plan_shots(scene)
+        shots = await self.policy.plan_shots(scene, thinking)
 
         thinking.scene = replace(
             scene,

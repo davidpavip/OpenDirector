@@ -9,6 +9,10 @@ from opendirector.planning import (
     ScenePlanning,
     ShotPlan,
 )
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from opendirector.planning.thinking_context import SceneThinkingContext
 
 
 class ImaginePolicy(ABC):
@@ -16,6 +20,7 @@ class ImaginePolicy(ABC):
     async def imagine(
         self,
         scene: ScenePlanning,
+        thinking: "SceneThinkingContext",
     ) -> tuple[SceneIdea, ...]:
         raise NotImplementedError
 
@@ -25,6 +30,7 @@ class CritiquePolicy(ABC):
     async def critique(
         self,
         scene: ScenePlanning,
+        thinking: "SceneThinkingContext",
     ) -> tuple[IdeaCritique, ...]:
         raise NotImplementedError
 
@@ -34,6 +40,7 @@ class DecisionPolicy(ABC):
     async def decide(
         self,
         scene: ScenePlanning,
+        thinking: "SceneThinkingContext",
     ) -> SceneDecision:
         raise NotImplementedError
 
@@ -43,6 +50,7 @@ class ShotPlanningPolicy(ABC):
     async def plan_shots(
         self,
         scene: ScenePlanning,
+        thinking: "SceneThinkingContext",
     ) -> tuple[ShotPlan, ...]:
         raise NotImplementedError
 
@@ -54,8 +62,14 @@ class DeterministicImaginePolicy(ImaginePolicy):
     async def imagine(
         self,
         scene: ScenePlanning,
+        thinking: "SceneThinkingContext",
     ) -> tuple[SceneIdea, ...]:
+        specification = thinking.production_specification
         understanding = scene.understanding
+
+        orientation = specification.preferred_orientation
+        aspect_ratio = specification.aspect_ratio
+        duration = specification.target_duration_seconds
 
         return (
             SceneIdea(
@@ -71,7 +85,8 @@ class DeterministicImaginePolicy(ImaginePolicy):
                 title="Visual Discovery Approach",
                 description=(
                     "Reveal the scene's important information through "
-                    "composition, environmental detail, and movement."
+                    "composition, environmental detail, and movement. "
+                    f"Stage the scene for {orientation} {aspect_ratio} framing."
                 ),
             ),
             SceneIdea(
@@ -89,7 +104,10 @@ class DeterministicCritiquePolicy(CritiquePolicy):
     async def critique(
         self,
         scene: ScenePlanning,
+        thinking: "SceneThinkingContext",
     ) -> tuple[IdeaCritique, ...]:
+        del thinking
+
         if not scene.ideas:
             raise ValueError("Critique requires at least one scene idea")
 
@@ -140,7 +158,10 @@ class DeterministicDecisionPolicy(DecisionPolicy):
     async def decide(
         self,
         scene: ScenePlanning,
+        thinking: "SceneThinkingContext",
     ) -> SceneDecision:
+        del thinking
+
         if not scene.ideas:
             raise ValueError("Decision requires scene ideas")
 
@@ -166,7 +187,10 @@ class DeterministicShotPlanningPolicy(ShotPlanningPolicy):
     async def plan_shots(
         self,
         scene: ScenePlanning,
+        thinking: "SceneThinkingContext",
     ) -> tuple[ShotPlan, ...]:
+        del thinking
+
         if scene.decision is None:
             raise ValueError("Shot planning requires a scene decision")
 

@@ -5,6 +5,7 @@ from typing import Any
 
 from opendirector.planning import ScenePlanning
 from opendirector.thinking import Understanding
+from opendirector.production import ProductionSpecification
 
 
 @dataclass
@@ -14,6 +15,9 @@ class SceneThinkingContext:
     scene_id: str
     title: str
 
+    production_specification: ProductionSpecification = field(
+        default_factory=ProductionSpecification
+    )
     production_understanding: Understanding | None = None
     scene: ScenePlanning | None = None
 
