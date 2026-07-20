@@ -3,7 +3,9 @@ from __future__ import annotations
 from dataclasses import replace
 from pathlib import Path
 
+from opendirector.artifact import Artifact, Kind
 from opendirector.production import (
+    ProductionSpecificationParser,
     ProductionStateStore,
     ProductionWorkspace,
     SceneState,
@@ -11,12 +13,10 @@ from opendirector.production import (
 )
 from opendirector.sketching import (
     MockSketchProvider,
+    ShotMarkdownParser,
     SketchProvider,
     SketchRequest,
-    ShotMarkdownParser,
 )
-from opendirector.artifact import Artifact
-from opendirector.artifact import Artifact, Kind
 
 
 class SketchApplication:
@@ -25,12 +25,16 @@ class SketchApplication:
     def __init__(
         self,
         provider: SketchProvider | None = None,
-        parser: ShotMarkdownParser | None = None,
         store: ProductionStateStore | None = None,
+        parser: ShotMarkdownParser | None = None,
+        specification_parser: ProductionSpecificationParser | None = None,
     ) -> None:
         self.provider = provider or MockSketchProvider()
-        self.parser = parser or ShotMarkdownParser()
         self.store = store or ProductionStateStore()
+        self.parser = parser or ShotMarkdownParser()
+        self.specification_parser = (
+            specification_parser or ProductionSpecificationParser()
+        )
 
     async def run(
         self,
@@ -40,6 +44,15 @@ class SketchApplication:
     ) -> tuple[Artifact, ...]:
         workspace = ProductionWorkspace.from_root(production_dir)
         scene_workspace = workspace.scene(scene_id)
+
+        source_path = workspace.root / "source.md"
+
+        if not source_path.is_file():
+            raise FileNotFoundError(f"Source document not found: {source_path}")
+
+        source_text = source_path.read_text(encoding="utf-8")
+
+        production_specification = self.specification_parser.parse(source_text)
 
         markdown = self.store.load_shots(scene_workspace)
         document = self.parser.parse(markdown)
@@ -80,8 +93,12 @@ class SketchApplication:
                             location=existing,
                             media_type=self._media_type(existing),
                             metadata={
-                                "provider_id": current.sketch_provider,
+                                "provider_id": (current.sketch_provider),
                                 "reused": True,
+                                "orientation": (
+                                    production_specification.preferred_orientation
+                                ),
+                                "aspect_ratio": (production_specification.aspect_ratio),
                             },
                         )
                     )
@@ -93,13 +110,12 @@ class SketchApplication:
                 scene_title=document.scene_title,
                 shot=shot,
                 output_directory=scene_workspace.sketch,
+                production_specification=production_specification,
             )
 
             artifact = await self.provider.sketch(request)
-            relative_artifact = artifact.location.relative_to(workspace.root)
 
-            print("relative_artifact =", relative_artifact)
-            print("type =", type(relative_artifact))
+            relative_artifact = artifact.location.relative_to(workspace.root)
 
             state.shots[shot.shot_id] = replace(
                 current,
@@ -110,9 +126,13 @@ class SketchApplication:
                 metadata={
                     **current.metadata,
                     "camera": shot.camera,
-                    "duration_seconds": shot.duration_seconds,
+                    "duration_seconds": (shot.duration_seconds),
                     "artifact_id": artifact.id,
                     "media_type": artifact.media_type,
+                    "orientation": artifact.metadata.get("orientation"),
+                    "aspect_ratio": artifact.metadata.get("aspect_ratio"),
+                    "canvas_width": artifact.metadata.get("canvas_width"),
+                    "canvas_height": artifact.metadata.get("canvas_height"),
                 },
             )
 
@@ -138,7 +158,10 @@ class SketchApplication:
 
         return state
 
-    def _media_type(self, path: Path) -> str:
+    @staticmethod
+    def _media_type(
+        path: Path,
+    ) -> str:
         suffix = path.suffix.lower()
 
         return {
@@ -147,4 +170,7 @@ class SketchApplication:
             ".jpg": "image/jpeg",
             ".jpeg": "image/jpeg",
             ".webp": "image/webp",
-        }.get(suffix, "application/octet-stream")
+        }.get(
+            suffix,
+            "application/octet-stream",
+        )

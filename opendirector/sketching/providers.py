@@ -3,19 +3,14 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from html import escape
 from pathlib import Path
-from textwrap import wrap
-
-##from opendirector.sketching.models import (
-##    SketchRequest,
-##    SketchResult,
-##)
-##from opendirector.products import ProductType, SketchProduct
 
 from opendirector.artifact import Artifact, Kind
+from opendirector.production import ProductionSpecification
+from opendirector.sketching.models import SketchRequest
 
 
 class SketchProvider(ABC):
-    """Provider capable of producing one visual sketch."""
+    """Provider capable of producing one visual sketch artifact."""
 
     provider_id: str
 
@@ -24,15 +19,13 @@ class SketchProvider(ABC):
         self,
         request: SketchRequest,
     ) -> Artifact:
+        """Create one sketch artifact from a provider-neutral request."""
+
         raise NotImplementedError
 
 
 class MockSketchProvider(SketchProvider):
-    """Deterministic SVG provider for architecture validation.
-
-    It creates a readable storyboard panel without calling an
-    external image-generation service.
-    """
+    """Deterministic SVG sketch provider used by tests and local demos."""
 
     provider_id = "mock.sketch"
 
@@ -47,8 +40,16 @@ class MockSketchProvider(SketchProvider):
 
         output_path = request.output_directory / f"{request.shot.shot_id}.svg"
 
+        width, height = self._canvas_size(request.production_specification)
+
+        svg = self._render_svg(
+            request=request,
+            width=width,
+            height=height,
+        )
+
         output_path.write_text(
-            self._render_svg(request),
+            svg,
             encoding="utf-8",
         )
 
@@ -62,86 +63,139 @@ class MockSketchProvider(SketchProvider):
             metadata={
                 "provider_id": self.provider_id,
                 "camera": request.shot.camera,
-                "duration_seconds": request.shot.duration_seconds,
+                "duration_seconds": (request.shot.duration_seconds),
+                "orientation": (request.production_specification.preferred_orientation),
+                "aspect_ratio": (request.production_specification.aspect_ratio),
+                "canvas_width": width,
+                "canvas_height": height,
             },
         )
+
+    @staticmethod
+    def _canvas_size(
+        specification: ProductionSpecification,
+    ) -> tuple[int, int]:
+        orientation = specification.preferred_orientation.casefold()
+
+        if orientation == "portrait":
+            return 540, 960
+
+        if orientation == "square":
+            return 720, 720
+
+        return 960, 540
 
     def _render_svg(
         self,
         request: SketchRequest,
+        width: int,
+        height: int,
     ) -> str:
         shot = request.shot
 
-        purpose_lines = self._lines(
-            shot.purpose,
-            width=55,
+        outer_margin = max(
+            24,
+            min(width, height) // 18,
         )
-        camera_lines = self._lines(
-            f"Camera: {shot.camera or 'Not specified'}",
-            width=55,
+        header_height = max(
+            48,
+            min(width, height) // 10,
         )
-
-        continuity = shot.continuity or "No additional continuity notes."
-        continuity_lines = self._lines(
-            f"Continuity: {continuity}",
-            width=55,
+        footer_height = max(
+            52,
+            min(width, height) // 10,
         )
 
-        revision = shot.filmmaker_revision.strip()
-        if revision:
-            revision_lines = self._lines(
-                f"Filmmaker revision: {revision}",
-                width=55,
-            )
-        else:
-            revision_lines = []
+        frame_x = outer_margin
+        frame_y = outer_margin
+        frame_width = width - (outer_margin * 2)
+        frame_height = height - (outer_margin * 2)
 
-        text_lines = (
-            purpose_lines + [""] + camera_lines + continuity_lines + revision_lines
-        )
+        image_x = frame_x + 20
+        image_y = frame_y + header_height
+        image_width = frame_width - 40
+        image_height = frame_height - header_height - footer_height
 
-        text_svg: list[str] = []
-        y = 330
+        image_right = image_x + image_width
+        image_bottom = image_y + image_height
+        center_x = image_x + (image_width / 2)
+        center_y = image_y + (image_height / 2)
 
-        for line in text_lines:
+        title_y = frame_y + 30
+        footer_y = frame_y + frame_height - 20
+
+        text_start_y = image_y + 34
+        text_line_height = 24
+
+        descriptive_lines = self._descriptive_lines(request)
+
+        text_svg = []
+
+        for index, line in enumerate(descriptive_lines):
             text_svg.append(
                 (
-                    f'<text x="60" y="{y}" '
+                    f'<text x="{image_x + 20}" '
+                    f'y="{text_start_y + index * text_line_height}" '
                     'font-family="sans-serif" '
-                    'font-size="20" '
-                    'fill="currentColor">'
+                    'font-size="16">'
                     f"{escape(line)}"
                     "</text>"
                 )
             )
-            y += 28
 
         return "\n".join(
             [
                 '<svg xmlns="http://www.w3.org/2000/svg"',
-                '     width="1280" height="720"',
-                '     viewBox="0 0 1280 720">',
-                '  <rect width="1280" height="720"',
-                '        fill="#f4f4f4"/>',
-                '  <rect x="40" y="40" width="1200" height="640"',
-                '        rx="18" fill="white"',
-                '        stroke="#222" stroke-width="4"/>',
-                '  <rect x="60" y="80" width="1160" height="210"',
-                '        fill="#dedede"',
-                '        stroke="#555" stroke-width="2"/>',
-                '  <line x1="60" y1="290" x2="1220" y2="80"',
-                '        stroke="#999" stroke-width="2"/>',
-                '  <line x1="60" y1="80" x2="1220" y2="290"',
-                '        stroke="#999" stroke-width="2"/>',
+                (f'     width="{width}" ' f'height="{height}"'),
+                (f'     viewBox="0 0 ' f'{width} {height}">'),
+                (f'  <rect width="{width}" ' f'height="{height}" ' 'fill="#f4f4f4"/>'),
                 (
-                    '  <text x="60" y="55" '
+                    f'  <rect x="{frame_x}" '
+                    f'y="{frame_y}" '
+                    f'width="{frame_width}" '
+                    f'height="{frame_height}" '
+                    'rx="18" '
+                    'fill="white" '
+                    'stroke="#222" '
+                    'stroke-width="4"/>'
+                ),
+                (
+                    f'  <rect x="{image_x}" '
+                    f'y="{image_y}" '
+                    f'width="{image_width}" '
+                    f'height="{image_height}" '
+                    'fill="#dedede" '
+                    'stroke="#555" '
+                    'stroke-width="2"/>'
+                ),
+                (
+                    f'  <line x1="{image_x}" '
+                    f'y1="{image_y}" '
+                    f'x2="{image_right}" '
+                    f'y2="{image_bottom}" '
+                    'stroke="#999" '
+                    'stroke-width="2"/>'
+                ),
+                (
+                    f'  <line x1="{image_x}" '
+                    f'y1="{image_bottom}" '
+                    f'x2="{image_right}" '
+                    f'y2="{image_y}" '
+                    'stroke="#999" '
+                    'stroke-width="2"/>'
+                ),
+                (
+                    f'  <text x="{frame_x + 20}" '
+                    f'y="{title_y}" '
                     'font-family="sans-serif" '
-                    'font-size="22" font-weight="bold">'
+                    'font-size="22" '
+                    'font-weight="bold">'
                     f"{escape(request.scene_title)}"
                     "</text>"
                 ),
                 (
-                    '  <text x="1180" y="55" '
+                    f'  <text x="{frame_x + frame_width - 20}" '
+                    f'y="{title_y}" '
                     'text-anchor="end" '
                     'font-family="sans-serif" '
                     'font-size="20">'
@@ -149,7 +203,8 @@ class MockSketchProvider(SketchProvider):
                     "</text>"
                 ),
                 (
-                    '  <text x="640" y="195" '
+                    f'  <text x="{center_x}" '
+                    f'y="{center_y}" '
                     'text-anchor="middle" '
                     'font-family="sans-serif" '
                     'font-size="28">'
@@ -158,14 +213,18 @@ class MockSketchProvider(SketchProvider):
                 ),
                 *[f"  {line}" for line in text_svg],
                 (
-                    '  <text x="60" y="650" '
+                    f'  <text x="{frame_x + 20}" '
+                    f'y="{footer_y}" '
                     'font-family="sans-serif" '
                     'font-size="18">'
-                    f"Duration: {shot.duration_seconds:g} seconds"
+                    f"Duration: "
+                    f"{shot.duration_seconds:g} seconds"
                     "</text>"
                 ),
                 (
-                    '  <text x="1220" y="650" '
+                    f"  <text "
+                    f'x="{frame_x + frame_width - 20}" '
+                    f'y="{footer_y}" '
                     'text-anchor="end" '
                     'font-family="sans-serif" '
                     'font-size="18">'
@@ -177,24 +236,39 @@ class MockSketchProvider(SketchProvider):
             ]
         )
 
-    def _lines(
-        self,
-        value: str,
-        width: int,
-    ) -> list[str]:
-        result: list[str] = []
+    @staticmethod
+    def _descriptive_lines(
+        request: SketchRequest,
+    ) -> tuple[str, ...]:
+        shot = request.shot
 
-        for paragraph in value.splitlines():
-            normalized = paragraph.strip()
+        lines = [
+            f"Purpose: {shot.purpose}",
+            f"Camera: {shot.camera}",
+        ]
 
-            if not normalized:
-                continue
+        if shot.intended_output:
+            lines.append(f"Output: {shot.intended_output}")
 
-            result.extend(
-                wrap(
-                    normalized,
-                    width=width,
-                )
-            )
+        if shot.continuity:
+            lines.append(f"Continuity: {shot.continuity}")
 
-        return result
+        if shot.creative_notes:
+            lines.append(f"Creative notes: {shot.creative_notes}")
+
+        if shot.filmmaker_revision:
+            lines.append("Filmmaker revision: " f"{shot.filmmaker_revision}")
+
+        specification = request.production_specification
+
+        lines.extend(
+            [
+                ("Orientation: " f"{specification.preferred_orientation}"),
+                ("Aspect ratio: " f"{specification.aspect_ratio}"),
+            ]
+        )
+
+        if request.style_context:
+            lines.append(f"Style: {request.style_context}")
+
+        return tuple(lines)
