@@ -30,12 +30,10 @@ from opendirector.planning import (
     ProductionBlueprint,
     RoleAssignment,
 )
-from opendirector.production import ProductionWorkspace
 from opendirector.providers import MockLanguageProvider
 
-from opendirector.production import (
-    ProductionSpecificationParser,
-)
+from opendirector.production import ProductionSpecificationParser, ProductionWorkspace
+
 
 class PlanningApplication:
     """Plan a production from normalized Markdown.
@@ -68,9 +66,9 @@ class PlanningApplication:
         self.planning_renderer = planning_renderer or PlanningMarkdownRenderer()
         self.workspace_initializer = workspace_initializer or WorkspaceInitializer()
         self.specification_parser = (
-            specification_parser
-            or ProductionSpecificationParser()
-        )    
+            specification_parser or ProductionSpecificationParser()
+        )
+
     async def run(
         self,
         production_dir: Path,
@@ -80,6 +78,8 @@ class PlanningApplication:
 
         paths = ProductionPaths.from_root(production_dir)
         source = self.production_io.load_source(paths)
+
+        production_specification = self.specification_parser.parse(source.content)
 
         template = ProductionBlueprint(source=source)
 
@@ -122,7 +122,10 @@ class PlanningApplication:
         # Human approval remains a separate boundary.
         approved = draft.approve(approved_by)
 
-        blueprint_markdown = self.renderer.render(approved)
+        blueprint_markdown = self.renderer.render(
+            blueprint=approved,
+            production_specification=production_specification,
+        )
 
         blueprint_path, _ = self.production_io.save_blueprint(
             paths=paths,

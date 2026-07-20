@@ -3,6 +3,19 @@
 **Version:** 1
 **Status:** approved
 
+## Production Specification
+
+- Creative Profile: movie
+- Distribution: Not specified
+- Orientation: landscape
+- Aspect Ratio: 16:9
+- Target Duration: 600 seconds
+- Narration Language: English
+- Subtitle Languages: English
+- Visual Style: Cinematic 3D animation
+- Target Audience: family
+- Tone: hopeful, emotional, and adventurous, with a quiet sense
+
 ## Intent
 
 Create an intimate animated short centered on loneliness, trust, and companionship.
@@ -89,4 +102,4 @@ Responsibilities:
 ## Approval
 
 - **Approved by:** Gilbert
-- **Approved at:** 2026-07-17T17:02:29.874192+00:00
+- **Approved at:** 2026-07-20T16:49:00.353762+00:00

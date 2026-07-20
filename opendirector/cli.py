@@ -4,6 +4,7 @@ import asyncio
 from pathlib import Path
 
 import typer
+from opendirector.applications import PlanningApplication
 
 app = typer.Typer(
     name="opendirector",
@@ -23,12 +24,17 @@ def plan(
         readable=True,
         resolve_path=True,
     ),
+    approved_by: str = typer.Option(
+        "Gilbert",
+        "--approved-by",
+        help="Name recorded as blueprint approver.",
+    ),
 ) -> None:
-    """Plan a production and create an evolved blueprint."""
+    """Plan a production and create planning.md and blueprint.md."""
 
     source_path = production / "source.md"
 
-    if not source_path.exists():
+    if not source_path.is_file():
         typer.secho(
             f"Source document not found: {source_path}",
             fg=typer.colors.RED,
@@ -46,26 +52,15 @@ def plan(
     typer.echo(f"Source:     {source_path}")
     typer.echo()
 
-    # Production 001 compatibility bridge.
-    #
-    # The existing deterministic demonstration is currently specialized
-    # for Little Robot. The next planning milestone will replace this
-    # dispatch with a generic planning application.
-    if production.name != "little_robot":
-        typer.secho(
-            "The current deterministic planner supports " "'little_robot' only.",
-            fg=typer.colors.YELLOW,
-        )
-        typer.echo(
-            "Generic source-to-blueprint planning will be introduced "
-            "in the next milestone."
-        )
-        raise typer.Exit(code=2)
-
-    from examples.run_little_robot_production import main as run_planning
+    application = PlanningApplication()
 
     try:
-        asyncio.run(run_planning())
+        blueprint_path = asyncio.run(
+            application.run(
+                production_dir=production,
+                approved_by=approved_by,
+            )
+        )
     except Exception as exc:
         typer.secho(
             f"Planning failed: {exc}",
@@ -74,11 +69,19 @@ def plan(
         )
         raise typer.Exit(code=1) from exc
 
-    blueprint_path = production / "blueprint.md"
+    planning_path = production / "planning.md"
 
-    if not blueprint_path.exists():
+    if not blueprint_path.is_file():
         typer.secho(
             "Planning completed but blueprint.md was not created.",
+            fg=typer.colors.RED,
+            err=True,
+        )
+        raise typer.Exit(code=1)
+
+    if not planning_path.is_file():
+        typer.secho(
+            "Planning completed but planning.md was not created.",
             fg=typer.colors.RED,
             err=True,
         )
@@ -90,6 +93,7 @@ def plan(
         fg=typer.colors.GREEN,
         bold=True,
     )
+    typer.echo(f"Planning:  {planning_path}")
     typer.echo(f"Blueprint: {blueprint_path}")
 
 

@@ -10,7 +10,7 @@
     "How visibly damaged should the robot appear?"
   ],
   "planning_stage": "decided",
-  "production_stage": "sketched",
+  "production_stage": "not_started",
   "scene_id": "scene-001",
   "selected_idea_ids": [
     "idea-a",
@@ -18,52 +18,40 @@
   ],
   "shots": {
     "shot-001": {
-      "approved_product": null,
-      "metadata": {
-        "camera": "Wide, slow cinematic push-in",
-        "duration_seconds": 5.0
-      },
+      "approved_artifact": null,
+      "metadata": {},
       "shot_id": "shot-001",
-      "sketch_product": "scenes/scene-001/products/sketch/shot-001.svg",
-      "sketch_provider": "mock.sketch",
-      "sketch_status": "completed",
-      "status": "in_progress"
+      "sketch_artifact": null,
+      "sketch_provider": null,
+      "sketch_status": "pending",
+      "status": "pending"
     },
     "shot-002": {
-      "approved_product": null,
-      "metadata": {
-        "camera": "Medium observational shot",
-        "duration_seconds": 5.0
-      },
+      "approved_artifact": null,
+      "metadata": {},
       "shot_id": "shot-002",
-      "sketch_product": "scenes/scene-001/products/sketch/shot-002.svg",
-      "sketch_provider": "mock.sketch",
-      "sketch_status": "completed",
-      "status": "in_progress"
+      "sketch_artifact": null,
+      "sketch_provider": null,
+      "sketch_status": "pending",
+      "status": "pending"
     },
     "shot-003": {
-      "approved_product": null,
-      "metadata": {
-        "camera": "Close-up with shallow movement",
-        "duration_seconds": 4.0
-      },
+      "approved_artifact": null,
+      "metadata": {},
       "shot_id": "shot-003",
-      "sketch_product": "scenes/scene-001/products/sketch/shot-003.svg",
-      "sketch_provider": "mock.sketch",
-      "sketch_status": "completed",
-      "status": "in_progress"
+      "sketch_artifact": null,
+      "sketch_provider": null,
+      "sketch_status": "pending",
+      "status": "pending"
     },
     "shot-004": {
-      "approved_product": null,
-      "metadata": {
-        "camera": "Over-the-shoulder",
-        "duration_seconds": 6.0
-      },
+      "approved_artifact": null,
+      "metadata": {},
       "shot_id": "shot-004",
-      "sketch_product": "scenes/scene-001/products/sketch/shot-004.svg",
-      "sketch_provider": "mock.sketch",
-      "sketch_status": "completed",
-      "status": "in_progress"
+      "sketch_artifact": null,
+      "sketch_provider": null,
+      "sketch_status": "pending",
+      "status": "pending"
     }
   },
   "status": "draft",

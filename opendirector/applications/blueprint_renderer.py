@@ -1,14 +1,61 @@
 from __future__ import annotations
 
 from opendirector.planning import ProductionBlueprint
+from opendirector.production import ProductionSpecification
 
 
 class BlueprintMarkdownRenderer:
     """Render a ProductionBlueprint as portable Markdown."""
 
+    @staticmethod
+    def _render_production_specification(
+        specification: ProductionSpecification,
+    ) -> list[str]:
+        duration = (
+            f"{specification.target_duration_seconds} seconds"
+            if specification.target_duration_seconds is not None
+            else "Not specified"
+        )
+
+        subtitle_languages = ", ".join(
+            specification.subtitle_languages
+        )
+
+        return [
+            "## Production Specification",
+            "",
+            f"- Creative Profile: {specification.creative_profile}",
+            (
+                "- Distribution: "
+                f"{specification.distribution or 'Not specified'}"
+            ),
+            (
+                "- Orientation: "
+                f"{specification.preferred_orientation}"
+            ),
+            f"- Aspect Ratio: {specification.aspect_ratio}",
+            f"- Target Duration: {duration}",
+            (
+                "- Narration Language: "
+                f"{specification.narration_language}"
+            ),
+            f"- Subtitle Languages: {subtitle_languages}",
+            (
+                "- Visual Style: "
+                f"{specification.visual_style or 'Not specified'}"
+            ),
+            (
+                "- Target Audience: "
+                f"{specification.target_audience or 'Not specified'}"
+            ),
+            f"- Tone: {specification.tone or 'Not specified'}",
+            "",
+        ]
+
     def render(
         self,
         blueprint: ProductionBlueprint,
+        production_specification: ProductionSpecification,
     ) -> str:
         lines: list[str] = [
             "# Production Blueprint",
@@ -16,17 +63,28 @@ class BlueprintMarkdownRenderer:
             f"**Version:** {blueprint.version}",
             f"**Status:** {blueprint.status.value}",
             "",
-            "## Intent",
-            "",
-            blueprint.intent_summary or "Not defined.",
-            "",
-            "## Story",
-            "",
-            blueprint.story_summary or "Not defined.",
-            "",
-            "## Story Roles",
-            "",
         ]
+
+        lines.extend(
+            self._render_production_specification(
+                production_specification
+            )
+        )
+
+        lines.extend(
+            [
+                "## Intent",
+                "",
+                blueprint.intent_summary or "Not defined.",
+                "",
+                "## Story",
+                "",
+                blueprint.story_summary or "Not defined.",
+                "",
+                "## Story Roles",
+                "",
+            ]
+        )
 
         self._append_story_roles(lines, blueprint)
         self._append_professions(lines, blueprint)
@@ -36,6 +94,7 @@ class BlueprintMarkdownRenderer:
         self._append_approval(lines, blueprint)
 
         return "\n".join(lines).rstrip() + "\n"
+
 
     def _append_story_roles(
         self,
