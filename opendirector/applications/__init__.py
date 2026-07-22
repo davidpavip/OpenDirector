@@ -3,6 +3,8 @@ from .planning import PlanningApplication
 from .production_io import ProductionIO, ProductionPaths
 from .shot_renderer import ShotMarkdownRenderer
 from .sketch import SketchApplication
+from .refine import RefineApplication
+from .direct import DirectApplication
 
 __all__ = [
     "BlueprintMarkdownRenderer",
@@ -11,4 +13,6 @@ __all__ = [
     "ProductionPaths",
     "ShotMarkdownRenderer",
     "SketchApplication",
+    "RefineApplication",
+    "DirectApplication",
 ]
