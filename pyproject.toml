@@ -5,6 +5,7 @@ description = "OpenDirector timestamp primitive"
 requires-python = ">=3.10"
 dependencies = [
     "typer>=0.12",
+    "requests>=2.31",
 ]
 
 [build-system]
@@ -16,5 +17,4 @@ include = ["opendirector*"]
 
 [project.scripts]
 opendirector = "opendirector.cli.main:main"
-
 

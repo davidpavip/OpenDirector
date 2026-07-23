@@ -97,8 +97,26 @@ class Timestamp:
     def zero(cls) -> "Timestamp":
         return cls(0)
 
+    @classmethod
+    def zero(cls) -> "Timestamp":
+        return cls(0)
+
+    @classmethod
+    def from_seconds(
+        cls,
+        seconds: float,
+    ) -> "Timestamp":
+        if seconds < 0:
+            raise ValueError("Timestamp cannot be negative")
+
+        return cls(round(seconds * 1000))
+
+    @property
+    def seconds(self) -> float:
+        return self.milliseconds / 1000.0
+
     def to_seconds(self) -> float:
-        return self.milliseconds / 1000
+        return self.seconds
 
     def to_srt(self) -> str:
         total = self.milliseconds

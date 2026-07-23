@@ -15,6 +15,11 @@ class ShotState:
     sketch_artifact: str | None = None
     sketch_provider: str | None = None
 
+    animation_status: str = "pending"
+    animation_artifact: str | None = None
+    animation_provider: str | None = None
+    animation_mode: str | None = None
+
     approved_artifact: str | None = None
     metadata: dict[str, Any] = field(default_factory=dict)
 
@@ -50,18 +55,6 @@ class SceneState:
             payload = dict(shot_data)
             payload.setdefault("shot_id", shot_id)
 
-##            shots[shot_id] = ShotState(
-##                shot_id=payload["shot_id"],
-##                status=payload.get("status", "pending"),
-##                sketch_status=payload.get(
-##                    "sketch_status",
-##                    "pending",
-##                ),
-##                sketch_product=payload.get("sketch_product"),
-##                sketch_provider=payload.get("sketch_provider"),
-##                approved_product=payload.get("approved_product"),
-##                metadata=dict(payload.get("metadata", {})),
-##            )
             shots[shot_id] = ShotState(
                 shot_id=payload["shot_id"],
                 status=payload.get("status", "pending"),
@@ -74,12 +67,40 @@ class SceneState:
                     payload.get("sketch_product"),
                 ),
                 sketch_provider=payload.get("sketch_provider"),
+                animation_status=payload.get(
+                    "animation_status",
+                    "pending",
+                ),
+                animation_artifact=payload.get(
+                    "animation_artifact",
+                    payload.get("clip_artifact"),
+                ),
+                animation_provider=payload.get("animation_provider"),
+                animation_mode=payload.get("animation_mode"),
                 approved_artifact=payload.get(
                     "approved_artifact",
                     payload.get("approved_product"),
                 ),
                 metadata=dict(payload.get("metadata", {})),
             )
+            # shots[shot_id] = ShotState(
+            #     shot_id=payload["shot_id"],
+            #     status=payload.get("status", "pending"),
+            #     sketch_status=payload.get(
+            #         "sketch_status",
+            #         "pending",
+            #     ),
+            #     sketch_artifact=payload.get(
+            #         "sketch_artifact",
+            #         payload.get("sketch_product"),
+            #     ),
+            #     sketch_provider=payload.get("sketch_provider"),
+            #     approved_artifact=payload.get(
+            #         "approved_artifact",
+            #         payload.get("approved_product"),
+            #     ),
+            #     metadata=dict(payload.get("metadata", {})),
+            # )
         return cls(
             scene_id=data["scene_id"],
             title=data.get("title", ""),

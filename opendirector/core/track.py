@@ -4,11 +4,20 @@ from enum import StrEnum
 
 
 class Track(StrEnum):
+    """Canonical creative and media tracks."""
+
     STORY = "story"
     VIDEO = "video"
+
     AUDIO = "audio"
-    MUSIC = "music"
+    NATIVE_AUDIO = "native_audio"
     DIALOGUE = "dialogue"
+    NARRATION = "narration"
+    AMBIENCE = "ambience"
+    FOLEY = "foley"
+    SOUND_EFFECT = "sound_effect"
+    MUSIC = "music"
+
     SUBTITLE = "subtitle"
     CAMERA = "camera"
     REVIEW = "review"

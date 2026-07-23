@@ -5,6 +5,8 @@ from .shot_renderer import ShotMarkdownRenderer
 from .sketch import SketchApplication
 from .refine import RefineApplication
 from .direct import DirectApplication
+from .animate import AnimateApplication
+from .clip_timeline import ClipTimelineApplication
 
 __all__ = [
     "BlueprintMarkdownRenderer",
@@ -15,4 +17,6 @@ __all__ = [
     "SketchApplication",
     "RefineApplication",
     "DirectApplication",
+    "AnimateApplication",
+    "ClipTimelineApplication",
 ]

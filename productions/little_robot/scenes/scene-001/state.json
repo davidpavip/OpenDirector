@@ -10,7 +10,7 @@
     "How visibly damaged should the robot appear?"
   ],
   "planning_stage": "decided",
-  "production_stage": "not_started",
+  "production_stage": "animation_in_progress",
   "scene_id": "scene-001",
   "selected_idea_ids": [
     "idea-a",
@@ -18,15 +18,29 @@
   ],
   "shots": {
     "shot-001": {
+      "animation_artifact": "scenes/scene-001/products/clip/shot-001-ltx-generate-001.mp4",
+      "animation_mode": "generate",
+      "animation_provider": "ltx.video",
+      "animation_status": "completed",
       "approved_artifact": null,
-      "metadata": {},
+      "metadata": {
+        "audio_baked_in": true,
+        "clip_artifact_id": "2a0e272e-129e-46cc-956a-7c65fafe8089",
+        "clip_media_type": "video/mp4",
+        "duration_seconds": 6.0,
+        "has_audio": true
+      },
       "shot_id": "shot-001",
       "sketch_artifact": null,
       "sketch_provider": null,
       "sketch_status": "pending",
-      "status": "pending"
+      "status": "in_progress"
     },
     "shot-002": {
+      "animation_artifact": null,
+      "animation_mode": null,
+      "animation_provider": null,
+      "animation_status": "pending",
       "approved_artifact": null,
       "metadata": {},
       "shot_id": "shot-002",
@@ -36,6 +50,10 @@
       "status": "pending"
     },
     "shot-003": {
+      "animation_artifact": null,
+      "animation_mode": null,
+      "animation_provider": null,
+      "animation_status": "pending",
       "approved_artifact": null,
       "metadata": {},
       "shot_id": "shot-003",
@@ -45,6 +63,10 @@
       "status": "pending"
     },
     "shot-004": {
+      "animation_artifact": null,
+      "animation_mode": null,
+      "animation_provider": null,
+      "animation_status": "pending",
       "approved_artifact": null,
       "metadata": {},
       "shot_id": "shot-004",

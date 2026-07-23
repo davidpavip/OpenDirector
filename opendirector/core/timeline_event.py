@@ -44,6 +44,30 @@ class TimelineEvent:
     def end(self) -> Timestamp:
         return self.start + self.duration
 
+    @property
+    def start_milliseconds(self) -> int:
+        return self.start.milliseconds
+
+    @property
+    def duration_milliseconds(self) -> int:
+        return self.duration.milliseconds
+
+    @property
+    def end_milliseconds(self) -> int:
+        return self.end.milliseconds
+
+    @property
+    def start_seconds(self) -> float:
+        return self.start.seconds
+
+    @property
+    def duration_seconds(self) -> float:
+        return self.duration.seconds
+
+    @property
+    def end_seconds(self) -> float:
+        return self.end.seconds
+
     def contains(self, timestamp: TimestampInput) -> bool:
         ts = Timestamp.parse(timestamp)
         return self.start <= ts < self.end
