@@ -16,6 +16,7 @@ class Kind(str, Enum):
     VIDEO = "video"
     SUBTITLE = "subtitle"
     COMPOSITE = "composite"
+    TEXT = "text"
 
 
 @dataclass(frozen=True)
